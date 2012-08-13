@@ -5,6 +5,8 @@ using System.Text;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CLWD.Model;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace CLWD.ViewModel
 {
@@ -13,6 +15,7 @@ namespace CLWD.ViewModel
         #region Members
         private VocaDB _database = new VocaDB();
         ObservableCollection<VocaViewModel> _book = new ObservableCollection<VocaViewModel>();
+        
         #endregion
 
         #region Properties
@@ -34,10 +37,49 @@ namespace CLWD.ViewModel
         {
             for (int i = 0; i < 3; ++i)
             {
-                _book.Add(new VocaViewModel { Voca = new Voca { Word = _database.GetRandomWord, Meaning = _database.GetRandomMeaning } });
+                VocaViewModel vocavm = new VocaViewModel { Voca = new Voca { Word = _database.GetRandomWord, Meaning = _database.GetRandomMeaning } };
+                vocavm.PropertyChanged += EntityViewModelPropertyChanged;
+                _book.Add(vocavm);
+                //_book.Add(new VocaViewModel { Voca = new Voca { Word = _database.GetRandomWord, Meaning = _database.GetRandomMeaning} });
+
             }
+
+            //_book.CollectionChanged += new NotifyCollectionChangedEventHandler(changed);
+            _book.CollectionChanged += changed;
+            
+            
+
         }
         #endregion
+
+        public void changed (object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (VocaViewModel item in e.OldItems)
+                {
+                    //Removed items
+                    item.PropertyChanged -= EntityViewModelPropertyChanged;
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (VocaViewModel item in e.NewItems)
+                {
+                    //Added items
+                    item.PropertyChanged += EntityViewModelPropertyChanged;
+                }
+            }     
+
+            
+        }
+
+        public void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            //This will get called when the property of an object inside the collection changes
+            Console.Write("d");
+        }
+
 
         #region Commands
         void UpdateAlbumArtistsExecute()

@@ -10,8 +10,8 @@
         <DataGrid Name="dataGrid1" ItemsSource="{Binding Path=Book}" AutoGenerateColumns="False">
 
             <DataGrid.Columns>
-                    <DataGridTextColumn Header="Word" Binding="{Binding Path=Word}" />
-                    <DataGridTextColumn Header="Meaning" Binding="{Binding Path=Meaning}" />
+                    <DataGridTextColumn Width="1*" Header="Word" Binding="{Binding Path=Word}" />
+                    <DataGridTextColumn Width="2*" Header="Meaning" Binding="{Binding Path=Meaning}" />
                 
             </DataGrid.Columns>
         </DataGrid>
