@@ -1,0 +1,19 @@
+﻿<Window x:Class="CLWD.Book"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:CLWD.ViewModel"
+        Title="MainWindow" Height="350" Width="525">
+    <Window.DataContext>
+        <local:BookViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <DataGrid Name="dataGrid1" ItemsSource="{Binding Path=Book}" AutoGenerateColumns="False">
+
+            <DataGrid.Columns>
+                    <DataGridTextColumn Header="Word" Binding="{Binding Path=Word}" />
+                    <DataGridTextColumn Header="Meaning" Binding="{Binding Path=Meaning}" />
+                
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

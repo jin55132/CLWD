@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
+using CLWD.Model;
 
-namespace CLWD.Model
+namespace CLWD.ViewModel
 {
     class VocaViewModel :ObservableObject
     {
