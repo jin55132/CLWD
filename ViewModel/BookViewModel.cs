@@ -11,7 +11,6 @@ using System.Net;
 using System.IO;
 using System.Net.Json;
 using System.Diagnostics;
-using CLWD.Connector;
 
 namespace CLWD.ViewModel
 {
@@ -112,49 +111,50 @@ namespace CLWD.ViewModel
 
                 }
 
-                // JsonTextParser parser = new JsonTextParser();
-                // JsonObject obj = parser.Parse(jstring);
 
-                JSONParser myParser = new JSONParser(jstring);
-                string[] telarray = myParser.GetStringArrayValue("tellist"); //배열 tellist 정보를 가지고 옵니다
-                int intlength = telarray.Length;
-                string namevalue = myParser.GetStringValue("name"); //name 의 value 를 가지고 옵니다.
 
-                string value, name;
-                JsonTextParser parser = new JsonTextParser();
-                JsonObject obj = parser.Parse(jstring);
-
-                //moreinfo 객체는 root 가 아니라 sub 객체로 구성되어 있으므로 처리가 필요합니다.
-
-                foreach (JsonObject field in obj as JsonObjectCollection)
-                {
-                    name = field.Name;
-                    value = string.Empty;
-                    if (name == "moreinfo")
-                    {
-                        JsonObject objSub = (JsonObject)(field); //즉 value 값을 다시 JsonObjcet 로 변환해줍니다
-                        //moreinfo 객체의 값들을 가지고 옵니다 age,sex,city 
-                        foreach (JsonObject fieldSub in objSub as JsonObjectCollection)
-                        {
-                            name = fieldSub.Name;
-                            value = (string)fieldSub.GetValue();
-                            if (name == "age")
-                            {
-
-                            }
-                            else if (name == "sex")
-                            {
-                            }
-                            else if (name == "city")
-                            {
-                            }
-                        }
-                    }
-                }
+                vocaVM.Meaning = jsonProcessor(jstring);
 
 
 
             }
+        }
+
+        public string jsonProcessor(string jsoninput)
+        {
+            string meaning = "";
+            try
+            {
+                JsonTextParser parser = new JsonTextParser();
+                JsonObject obj = parser.Parse(jsoninput);
+
+                JsonObjectCollection rootCol = obj as JsonObjectCollection;
+                JsonObjectCollection term0 = (JsonObjectCollection)((JsonObjectCollection)rootCol["term0"])["PrincipalTranslations"];
+
+                
+                int count = 0;
+                foreach (JsonObjectCollection principalCol in term0 as JsonObjectCollection)
+                {
+                    JsonObjectCollection OriginalTerm = (JsonObjectCollection)principalCol["OriginalTerm"];
+                    JsonObjectCollection FirstTranslation = (JsonObjectCollection)principalCol["FirstTranslation"];
+                    JsonObject term = FirstTranslation["term"];
+                    JsonObject pos = OriginalTerm["POS"];
+
+                    string strTerm = (string)term.GetValue();
+                    string strPos = (string)pos.GetValue();
+
+                    string voca = string.Format("{0}:({1}) {2}\n", count++, strPos, strTerm);
+
+
+                    meaning += voca;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                meaning = "No Match";
+            }
+
+            return meaning;
         }
 
         public string generateUrl(string word)
