@@ -58,7 +58,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Connector\JSONParser.cs" />
+    <Compile Include="Connector\Class1.cs" />
     <Compile Include="Model\Account.cs" />
     <Compile Include="ViewModel\BookViewModel.cs" />
     <Compile Include="Model\Voca.cs" />
@@ -105,6 +105,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="App1.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

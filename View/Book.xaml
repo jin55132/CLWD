@@ -6,7 +6,7 @@
     <Window.DataContext>
         <local:BookViewModel/>
     </Window.DataContext>
-    <Grid>
+    <Grid IsEnabled="{Binding Path=Signed}">
         <DataGrid Name="dataGrid1" ItemsSource="{Binding Path=Book}" AutoGenerateColumns="False">
 
             <DataGrid.Columns>

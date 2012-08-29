@@ -11,17 +11,21 @@ using System.Net;
 using System.IO;
 using System.Net.Json;
 using System.Diagnostics;
-using CLWD.Connector;
+using System.Threading;
+using System.Windows.Threading;
+using System.Windows;
 
 namespace CLWD.ViewModel
 {
-    class BookViewModel
+    class BookViewModel : ObservableObject
     {
         #region Members
         private VocaDB _database = new VocaDB();
         ObservableCollection<VocaViewModel> _book = new ObservableCollection<VocaViewModel>();
 
         #endregion
+
+        delegate string JSONAction(string s);
 
         #region Properties
         public ObservableCollection<VocaViewModel> Book
@@ -35,6 +39,8 @@ namespace CLWD.ViewModel
                 _book = value;
             }
         }
+
+
         #endregion
 
         #region Construction
@@ -96,65 +102,96 @@ namespace CLWD.ViewModel
                 //    text = sr.ReadToEnd();
                 //}
 
-                string jsonUri = generateUrl(vocaVM.Word);
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(jsonUri);
-                request.Method = WebRequestMethods.Http.Get;
-                request.Accept = "application/json";
-
-                var response = (HttpWebResponse)request.GetResponse();
 
 
-                string jstring;
-                using (var streamReader = new StreamReader(response.GetResponseStream()))
+                ThreadStart start = delegate()
                 {
-                    var responseText = streamReader.ReadToEnd();
-                    jstring = responseText;
+                    // ...
+                    //Thread.Sleep(10000);
 
-                }
+                    //DispatcherOperation op = Application.Current.Dispatcher.BeginInvoke(
+                    //DispatcherPriority.Normal,
+                    //     new JSONAction(jsonProcessor),
+                    //     jstring);
 
-                // JsonTextParser parser = new JsonTextParser();
-                // JsonObject obj = parser.Parse(jstring);
-
-                JSONParser myParser = new JSONParser(jstring);
-                string[] telarray = myParser.GetStringArrayValue("tellist"); //배열 tellist 정보를 가지고 옵니다
-                int intlength = telarray.Length;
-                string namevalue = myParser.GetStringValue("name"); //name 의 value 를 가지고 옵니다.
-
-                string value, name;
-                JsonTextParser parser = new JsonTextParser();
-                JsonObject obj = parser.Parse(jstring);
-
-                //moreinfo 객체는 root 가 아니라 sub 객체로 구성되어 있으므로 처리가 필요합니다.
-
-                foreach (JsonObject field in obj as JsonObjectCollection)
-                {
-                    name = field.Name;
-                    value = string.Empty;
-                    if (name == "moreinfo")
+                    //DispatcherOperationStatus status = op.Status;
+                    //while (status != DispatcherOperationStatus.Completed)
+                    //{
+                    //    status = op.Wait(TimeSpan.FromMilliseconds(1000));
+                    //    if (status == DispatcherOperationStatus.Aborted)
+                    //    {
+                    //        // Alert Someone
+                    //    }
+                    //}
+                    //} 
+                    try
                     {
-                        JsonObject objSub = (JsonObject)(field); //즉 value 값을 다시 JsonObjcet 로 변환해줍니다
-                        //moreinfo 객체의 값들을 가지고 옵니다 age,sex,city 
-                        foreach (JsonObject fieldSub in objSub as JsonObjectCollection)
+                        string jsonUri = generateUrl(vocaVM.Word);
+                        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(jsonUri);
+                        request.Method = WebRequestMethods.Http.Get;
+                        request.Accept = "application/json";
+
+                        var response = (HttpWebResponse)request.GetResponse();
+
+
+                        string jstring;
+                        using (var streamReader = new StreamReader(response.GetResponseStream()))
                         {
-                            name = fieldSub.Name;
-                            value = (string)fieldSub.GetValue();
-                            if (name == "age")
-                            {
+                            var responseText = streamReader.ReadToEnd();
+                            jstring = responseText;
 
-                            }
-                            else if (name == "sex")
-                            {
-                            }
-                            else if (name == "city")
-                            {
-                            }
                         }
+                        vocaVM.Meaning = jsonProcessor(jstring);
+
                     }
-                }
+                    catch (System.Exception ex)
+                    {
+                        vocaVM.Meaning = "No Match";
+                    }
 
+                };
 
+                new Thread(start).Start();
 
             }
+
+
+        }
+
+
+
+        public string jsonProcessor(string jsoninput)
+        {
+            // Thread.Sleep(1000);
+            string meaning = "";
+
+            JsonTextParser parser = new JsonTextParser();
+            JsonObject obj = parser.Parse(jsoninput);
+
+            JsonObjectCollection rootCol = obj as JsonObjectCollection;
+            JsonObjectCollection term0 = (JsonObjectCollection)((JsonObjectCollection)rootCol["term0"])["PrincipalTranslations"];
+
+
+            int count = 0;
+            foreach (JsonObjectCollection principalCol in term0 as JsonObjectCollection)
+            {
+                JsonObjectCollection OriginalTerm = (JsonObjectCollection)principalCol["OriginalTerm"];
+                JsonObjectCollection FirstTranslation = (JsonObjectCollection)principalCol["FirstTranslation"];
+                JsonObject term = FirstTranslation["term"];
+                JsonObject pos = OriginalTerm["POS"];
+
+                string strTerm = (string)term.GetValue();
+                string strPos = (string)pos.GetValue();
+
+                string voca = string.Format("{0}:({1}) {2}\n", count++, strPos, strTerm);
+
+
+                meaning += voca;
+            }
+
+
+
+            return meaning;
         }
 
         public string generateUrl(string word)

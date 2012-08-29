@@ -36,6 +36,8 @@ namespace CLWD.ViewModel
             }
         }
 
+
+        
         public string Word
         {
             get { return Voca.Word; }
