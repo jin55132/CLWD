@@ -18,6 +18,7 @@ using System.Windows;
 namespace CLWD.ViewModel
 {
     class BookViewModel : ObservableObject
+
     {
         #region Members
         private VocaDB _database = new VocaDB();
@@ -25,7 +26,6 @@ namespace CLWD.ViewModel
 
         #endregion
 
-        delegate string JSONAction(string s);
 
         #region Properties
         public ObservableCollection<VocaViewModel> Book
@@ -39,7 +39,6 @@ namespace CLWD.ViewModel
                 _book = value;
             }
         }
-
 
         #endregion
 
@@ -101,6 +100,7 @@ namespace CLWD.ViewModel
                 //{
                 //    text = sr.ReadToEnd();
                 //}
+
 
 
 
