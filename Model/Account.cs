@@ -10,7 +10,14 @@ namespace CLWD.Model
         #region Members
         string _id;
         string _password;
+
         #endregion
+
+        public Account()
+        {
+            ID = "";
+            Password = "";
+        }
 
 
         #region Properties
@@ -33,6 +40,9 @@ namespace CLWD.Model
                 RaisePropertyChanged("Password");
             }
         }
+        
+
+
         #endregion
     }
 

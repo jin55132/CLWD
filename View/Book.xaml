@@ -3,11 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:CLWD.ViewModel"
         Title="MainWindow" Height="350" Width="525">
-    <Window.DataContext>
-        <local:BookViewModel/>
-    </Window.DataContext>
+
     <Grid IsEnabled="{Binding Path=Signed}">
-        <DataGrid Name="dataGrid1" ItemsSource="{Binding Path=Book}" AutoGenerateColumns="False">
+        <DataGrid Name="dataGrid1" ItemsSource="{Binding Path=Book}" IsEnabled="{Binding Path=Authorized}"  AutoGenerateColumns="False">
 
             <DataGrid.Columns>
                     <DataGridTextColumn Width="1*" Header="Word" Binding="{Binding Path=Word}" />

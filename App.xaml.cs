@@ -5,6 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 using CLWD.ViewModel;
+using Microsoft.Win32;
+using CLWD.Model;
 
 namespace CLWD
 {
@@ -17,13 +19,28 @@ namespace CLWD
         {
             base.OnStartup(e);
 
-            Book window = new Book();
+            
 
             // Create the ViewModel to which 
             // the main window binds.
             //string path = "Data/customers.xml";
 
-            var viewModel = new BookViewModel();
+            var loginViewModel = new LoginViewModel();
+            var bookViewModel = new BookViewModel(loginViewModel);
+            
+            Book bookWindow = new Book();
+            bookWindow.DataContext = bookViewModel;
+            bookWindow.Show();
+
+
+            if (!loginViewModel.Authorized)
+            {
+                Login loginWindow = new Login();
+                loginWindow.DataContext = loginViewModel;
+                loginWindow.Show();
+            }
+            
+            
 
             // When the ViewModel asks to be closed, 
             // close the window.
@@ -39,16 +56,17 @@ namespace CLWD
             // bind to the ViewModel by setting the 
             // DataContext, which propagates down 
             // the element tree.
-            window.DataContext = viewModel;
-            string xmlDataDirectory = ConfigurationSettings.AppSettings.Get("googleKey");
+            // 
+            // 
 
 
-            window.Show();
 
 
 
 
         }
+
+
     }
 
 

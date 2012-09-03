@@ -11,7 +11,7 @@ namespace CLWD.ViewModel
     {
         #region Construction
         /// <summary>
-        /// Constructs the default instance of a SongViewModel
+        ///
         /// </summary>
         public VocaViewModel()
         {

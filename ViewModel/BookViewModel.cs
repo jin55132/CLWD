@@ -22,10 +22,12 @@ namespace CLWD.ViewModel
     {
         #region Members
         private VocaDB _database = new VocaDB();
-        ObservableCollection<VocaViewModel> _book = new ObservableCollection<VocaViewModel>();
+        private LoginViewModel _login;
+        private ObservableCollection<VocaViewModel> _book = new ObservableCollection<VocaViewModel>();
 
         #endregion
-
+        
+       
 
         #region Properties
         public ObservableCollection<VocaViewModel> Book
@@ -40,11 +42,30 @@ namespace CLWD.ViewModel
             }
         }
 
+        public bool Authorized
+        {
+            get
+            {
+                return _login.Authorized;
+            }
+            set
+            {
+                _login.Authorized = value;
+                RaisePropertyChanged("Authorized");
+            }
+        }
+        
         #endregion
 
+
+
         #region Construction
-        public BookViewModel()
+        public BookViewModel(LoginViewModel login)
         {
+            _login = login;
+
+            _login.PropertyChanged += loginPropertyChanged();
+
             for (int i = 0; i < 3; ++i)
             {
                 VocaViewModel vocavm = new VocaViewModel { Voca = new Voca { Word = _database.GetRandomWord, Meaning = _database.GetRandomMeaning } };
@@ -144,7 +165,7 @@ namespace CLWD.ViewModel
                         vocaVM.Meaning = jsonProcessor(jstring);
 
                     }
-                    catch (System.Exception ex)
+                    catch
                     {
                         vocaVM.Meaning = "No Match";
                     }
@@ -204,6 +225,12 @@ namespace CLWD.ViewModel
 
             return uri + version + key + method + dictionary + word;
         }
+
+        public void loginPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+
+        }
+
 
         #region Commands
         void UpdateAlbumArtistsExecute()
