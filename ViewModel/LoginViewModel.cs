@@ -8,6 +8,7 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using Google.GData.Spreadsheets;
 using System.Threading;
+using Google.GData.Documents;
 
 namespace CLWD.ViewModel
 {
@@ -29,7 +30,7 @@ namespace CLWD.ViewModel
             _authorized = false;
             _canLogin = true;
             LoadFromRegistry();
-        } 
+        }
         #endregion
 
 
@@ -104,32 +105,41 @@ namespace CLWD.ViewModel
 
             SpreadsheetsService service = new SpreadsheetsService("MySpreadsheetIntegration-v1");
             service.setUserCredentials(ID, Password);
-            Authorized = true;
-            //        
-            //        
-            //ThreadStart start = delegate()
-            //{
+            string queryTitle = ID + "@CLWD";
 
-            //    try
-            //    {
-            //        SpreadsheetsService service = new SpreadsheetsService("MySpreadsheetIntegration-v1");
-            //        service.setUserCredentials(ID, Password);
+            Google.GData.Spreadsheets.SpreadsheetQuery query = new Google.GData.Spreadsheets.SpreadsheetQuery();
+            query.Title = queryTitle;
+           
 
-            //        Authorized = true;
-            //    }
-            //    catch
-            //    {
-            //        Authorized = false;
-            //    }
+            ThreadStart start = delegate()
+            {
 
-            //};
-            //new Thread(start).Start();
+                try
+                {
+                    SpreadsheetFeed feed = service.Query(query);
 
-            if(Authorized)
-               SaveToRegistry();
+                    Authorized = true;
+                    CanLogin = true;
+                    SaveToRegistry();
 
 
-           // CanLogin = true;
+
+                }
+                catch
+                {
+                    ID = "";
+                    Password = "";
+                    Authorized = false;
+                    CanLogin = true;
+                }
+
+            };
+            new Thread(start).Start();
+
+            
+               
+
+
         }
 
         bool CanLoginExecute()
@@ -147,9 +157,9 @@ namespace CLWD.ViewModel
 
         public void LoadFromRegistry()
         {
-            RegistryKey key = Registry.LocalMachine.OpenSubKey("Software", true).CreateSubKey("CLWD"); 
-            
-          
+            RegistryKey key = Registry.LocalMachine.OpenSubKey("Software", true).CreateSubKey("CLWD");
+
+
             ID = (string)key.GetValue("ID", "");
             Password = (string)key.GetValue("Password", "");
         }

@@ -51,7 +51,7 @@ namespace CLWD.ViewModel
             set
             {
                 _login.Authorized = value;
-                RaisePropertyChanged("Authorized");
+                
             }
         }
         
@@ -64,7 +64,7 @@ namespace CLWD.ViewModel
         {
             _login = login;
 
-            _login.PropertyChanged += loginPropertyChanged();
+            _login.PropertyChanged += LoginViewModelPropertyChanged;
 
             for (int i = 0; i < 3; ++i)
             {
@@ -226,9 +226,12 @@ namespace CLWD.ViewModel
             return uri + version + key + method + dictionary + word;
         }
 
-        public void loginPropertyChanged(object sender, PropertyChangedEventArgs e)
+        public void LoginViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-
+            if (e.PropertyName == "Authorized")
+            {
+                RaisePropertyChanged("Authorized");
+            }
         }
 
 
