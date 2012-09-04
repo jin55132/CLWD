@@ -64,8 +64,13 @@ namespace CLWD.ViewModel
         {
             _login = login;
 
-            _login.PropertyChanged += LoginViewModelPropertyChanged;
+            //_login.PropertyChanged += LoginViewModelPropertyChanged;
+            _login.PropertyChanged += (obj, e) =>
+            {
+                if (e.PropertyName == "Authorized")
+                    RaisePropertyChanged(e.PropertyName);
 
+            };
             for (int i = 0; i < 3; ++i)
             {
                 VocaViewModel vocavm = new VocaViewModel { Voca = new Voca { Word = _database.GetRandomWord, Meaning = _database.GetRandomMeaning } };
@@ -226,13 +231,13 @@ namespace CLWD.ViewModel
             return uri + version + key + method + dictionary + word;
         }
 
-        public void LoginViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "Authorized")
-            {
-                RaisePropertyChanged("Authorized");
-            }
-        }
+        //public void LoginViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        //{
+        //    //if (e.PropertyName == "Authorized")
+        //    {
+        //        RaisePropertyChanged(e.PropertyName);
+        //    }
+        //}
 
 
         #region Commands
