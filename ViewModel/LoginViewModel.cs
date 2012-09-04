@@ -9,10 +9,12 @@ using System.Diagnostics;
 using Google.GData.Spreadsheets;
 using System.Threading;
 using Google.GData.Documents;
+using System.Windows.Threading;
+using System.Windows;
 
 namespace CLWD.ViewModel
 {
-    class LoginViewModel : ObservableObject
+    class LoginViewModel : BaseViewModel
     {
         #region Members
         /// <summary>
@@ -21,6 +23,7 @@ namespace CLWD.ViewModel
         private bool _authorized;
         private Account _account;
         private bool _canLogin;
+        private bool _savePassword;
         #endregion
 
         #region Constructor
@@ -29,6 +32,8 @@ namespace CLWD.ViewModel
             _account = new Account();
             _authorized = false;
             _canLogin = true;
+            _savePassword = false;
+
             LoadFromRegistry();
         }
         #endregion
@@ -93,6 +98,15 @@ namespace CLWD.ViewModel
             }
         }
 
+        public bool SavePassword
+        {
+            get { return _savePassword; }
+            set
+            {
+                _savePassword = value;
+                RaisePropertyChanged("SavePassword");
+            }
+        }
         #endregion
 
 
@@ -108,9 +122,10 @@ namespace CLWD.ViewModel
             string queryTitle = ID + "@CLWD";
 
             Google.GData.Spreadsheets.SpreadsheetQuery query = new Google.GData.Spreadsheets.SpreadsheetQuery();
+            
             query.Title = queryTitle;
-           
 
+            
             ThreadStart start = delegate()
             {
 
@@ -123,7 +138,23 @@ namespace CLWD.ViewModel
                     SaveToRegistry();
 
 
+                    // OnRequestClose 는 UI Thread이므로 Dispatcher 사용해야함..
 
+                    DispatcherOperation op = Application.Current.Dispatcher.BeginInvoke(
+                    DispatcherPriority.Normal,
+                         new Action(OnRequestClose));
+
+                    //DispatcherOperationStatus status = op.Status;
+                    //while (status != DispatcherOperationStatus.Completed)
+                    //{
+                    //    status = op.Wait(TimeSpan.FromMilliseconds(1000));
+                    //    if (status == DispatcherOperationStatus.Aborted)
+                    //    {
+                    //        // Alert Someone
+                    //    }
+                    //}
+              
+                    
                 }
                 catch
                 {
@@ -136,8 +167,8 @@ namespace CLWD.ViewModel
             };
             new Thread(start).Start();
 
-            
-               
+
+
 
 
         }
@@ -147,11 +178,13 @@ namespace CLWD.ViewModel
             return CanLogin;
         }
 
-        public ICommand LoginAction { get { return new RelayCommand(LoginExecute, CanLoginExecute); } }
+        public ICommand LoginAction
+        {
+            get { 
+                return new RelayCommand(LoginExecute, CanLoginExecute); 
+            }
+        }
         #endregion
-
-
-
 
 
 
@@ -162,14 +195,32 @@ namespace CLWD.ViewModel
 
             ID = (string)key.GetValue("ID", "");
             Password = (string)key.GetValue("Password", "");
+
+            if (!ID.Equals("") && !Password.Equals(""))
+            {
+                SavePassword = true;
+            }
+            else
+            {
+                SavePassword = false;
+            }
         }
 
         public void SaveToRegistry()
         {
             RegistryKey key = Registry.LocalMachine.CreateSubKey("Software").CreateSubKey("CLWD");
 
-            key.SetValue("ID", ID);
-            key.SetValue("Password", Password);
+            if (SavePassword == true)
+            {
+                key.SetValue("ID", ID);
+                key.SetValue("Password", Password);
+            }
+            else
+            {
+                key.DeleteValue("ID");
+                key.DeleteValue("Password");
+            }
+
         }
 
     }

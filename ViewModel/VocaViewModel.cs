@@ -7,7 +7,7 @@ using CLWD.Model;
 
 namespace CLWD.ViewModel
 {
-    class VocaViewModel :ObservableObject
+    class VocaViewModel : BaseViewModel
     {
         #region Construction
         /// <summary>

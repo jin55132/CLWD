@@ -17,7 +17,7 @@ using System.Windows;
 
 namespace CLWD.ViewModel
 {
-    class BookViewModel : ObservableObject
+    class BookViewModel : BaseViewModel
 
     {
         #region Members
@@ -71,6 +71,7 @@ namespace CLWD.ViewModel
                     RaisePropertyChanged(e.PropertyName);
 
             };
+
             for (int i = 0; i < 3; ++i)
             {
                 VocaViewModel vocavm = new VocaViewModel { Voca = new Voca { Word = _database.GetRandomWord, Meaning = _database.GetRandomMeaning } };
@@ -112,44 +113,14 @@ namespace CLWD.ViewModel
 
         public void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            //This will get called when the property of an object inside the collection changes
 
             if (e.PropertyName.Equals("Word"))
             {
                 VocaViewModel vocaVM = ((VocaViewModel)sender);
 
-                //var request = WebRequest.Create(url);
-                //string text;
-                //var response = (HttpWebResponse)request.GetResponse();
-
-                //using (var sr = new StreamReader(response.GetResponseStream()))
-                //{
-                //    text = sr.ReadToEnd();
-                //}
-
-
-
-
                 ThreadStart start = delegate()
                 {
-                    // ...
-                    //Thread.Sleep(10000);
-
-                    //DispatcherOperation op = Application.Current.Dispatcher.BeginInvoke(
-                    //DispatcherPriority.Normal,
-                    //     new JSONAction(jsonProcessor),
-                    //     jstring);
-
-                    //DispatcherOperationStatus status = op.Status;
-                    //while (status != DispatcherOperationStatus.Completed)
-                    //{
-                    //    status = op.Wait(TimeSpan.FromMilliseconds(1000));
-                    //    if (status == DispatcherOperationStatus.Aborted)
-                    //    {
-                    //        // Alert Someone
-                    //    }
-                    //}
-                    //} 
+                    //WordReference 통해 단어의미 획득..json
                     try
                     {
                         string jsonUri = generateUrl(vocaVM.Word);
@@ -158,7 +129,6 @@ namespace CLWD.ViewModel
                         request.Accept = "application/json";
 
                         var response = (HttpWebResponse)request.GetResponse();
-
 
                         string jstring;
                         using (var streamReader = new StreamReader(response.GetResponseStream()))

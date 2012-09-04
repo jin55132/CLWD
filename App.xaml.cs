@@ -19,24 +19,41 @@ namespace CLWD
         {
             base.OnStartup(e);
 
-            
-
             // Create the ViewModel to which 
             // the main window binds.
             //string path = "Data/customers.xml";
 
             var loginViewModel = new LoginViewModel();
             var bookViewModel = new BookViewModel(loginViewModel);
-            
+
             Book bookWindow = new Book();
+            Login loginWindow = new Login();
+
+
             bookWindow.DataContext = bookViewModel;
+            loginWindow.DataContext = loginViewModel;
+
+            #region close command handler
+            EventHandler handler = null;
+            handler = delegate
+            {
+                loginViewModel.RequestClose -= handler;
+                loginWindow.Close();
+            };
+
+
+            loginViewModel.RequestClose += handler;
+           // loginViewModel.RequestClose += (s, eve) => loginWindow.Close();
+            #endregion
+
+
+
             bookWindow.Show();
 
 
             if (!loginViewModel.Authorized)
             {
-                Login loginWindow = new Login();
-                loginWindow.DataContext = loginViewModel;
+                 
                 loginWindow.Show();
             }
             
