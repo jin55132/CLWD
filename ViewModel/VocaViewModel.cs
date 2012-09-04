@@ -15,7 +15,7 @@ namespace CLWD.ViewModel
         /// </summary>
         public VocaViewModel()
         {
-            _voca = new Voca { Word = "Unknown", Meaning = "Unknown" };
+            _voca = new Voca { Word = "Insert a word", Meaning = "" };
         }
         #endregion
 

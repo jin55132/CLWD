@@ -33,6 +33,7 @@ namespace CLWD
             bookWindow.DataContext = bookViewModel;
             loginWindow.DataContext = loginViewModel;
 
+
             #region close command handler
             EventHandler handler = null;
             handler = delegate

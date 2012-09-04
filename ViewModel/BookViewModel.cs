@@ -108,7 +108,6 @@ namespace CLWD.ViewModel
                 }
             }
 
-
         }
 
         public void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)

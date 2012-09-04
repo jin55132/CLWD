@@ -23,7 +23,7 @@ namespace CLWD.ViewModel
         private bool _authorized;
         private Account _account;
         private bool _canLogin;
-        private bool _savePassword;
+        private bool _saveAccount;
         #endregion
 
         #region Constructor
@@ -32,9 +32,14 @@ namespace CLWD.ViewModel
             _account = new Account();
             _authorized = false;
             _canLogin = true;
-            _savePassword = false;
+            _saveAccount = false;
 
             LoadFromRegistry();
+
+            if (SaveAccount)
+            {
+                LoginExecute();
+            }
         }
         #endregion
 
@@ -98,13 +103,13 @@ namespace CLWD.ViewModel
             }
         }
 
-        public bool SavePassword
+        public bool SaveAccount
         {
-            get { return _savePassword; }
+            get { return _saveAccount; }
             set
             {
-                _savePassword = value;
-                RaisePropertyChanged("SavePassword");
+                _saveAccount = value;
+                RaisePropertyChanged("SaveAccount");
             }
         }
         #endregion
@@ -198,11 +203,11 @@ namespace CLWD.ViewModel
 
             if (!ID.Equals("") && !Password.Equals(""))
             {
-                SavePassword = true;
+                SaveAccount = true;
             }
             else
             {
-                SavePassword = false;
+                SaveAccount = false;
             }
         }
 
@@ -210,7 +215,7 @@ namespace CLWD.ViewModel
         {
             RegistryKey key = Registry.LocalMachine.CreateSubKey("Software").CreateSubKey("CLWD");
 
-            if (SavePassword == true)
+            if (SaveAccount == true)
             {
                 key.SetValue("ID", ID);
                 key.SetValue("Password", Password);

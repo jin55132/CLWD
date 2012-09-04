@@ -4,8 +4,22 @@
         xmlns:local="clr-namespace:CLWD.ViewModel"
         Title="MainWindow" Height="350" Width="525">
 
-    <Grid IsEnabled="{Binding Path=Signed}">
-        <DataGrid Name="dataGrid1" ItemsSource="{Binding Path=Book}" IsEnabled="{Binding Path=Authorized}"  AutoGenerateColumns="False">
+
+    <DockPanel>
+        
+        <DockPanel DockPanel.Dock="Top" KeyboardNavigation.TabNavigation="None">
+            <Menu KeyboardNavigation.TabNavigation="Cycle">
+                <MenuItem Header="_File">
+                    <MenuItem Header="E_xit" Command="{Binding Path=CloseCommand}" />
+                </MenuItem>
+                <MenuItem Header="_Edit" />
+                <MenuItem Header="_Options" />
+                <MenuItem Header="_Help" />
+            </Menu>
+        </DockPanel>
+        
+        <DataGrid Name="dataGrid1" ItemsSource="{Binding Path=Book}" IsEnabled="{Binding Path=Authorized}"  AutoGenerateColumns="False" Margin="0,0
+                  ,0,0">
 
             <DataGrid.Columns>
                     <DataGridTextColumn Width="1*" Header="Word" Binding="{Binding Path=Word}" />
@@ -13,5 +27,5 @@
                 
             </DataGrid.Columns>
         </DataGrid>
-    </Grid>
+    </DockPanel>
 </Window>
