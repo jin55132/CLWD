@@ -23,11 +23,11 @@ namespace CLWD
             // the main window binds.
             //string path = "Data/customers.xml";
 
-            var loginViewModel = new LoginViewModel();
+            var loginViewModel = new GoogleIDLoginViewModel();
             var bookViewModel = new BookViewModel(loginViewModel);
 
             Book bookWindow = new Book();
-            Login loginWindow = new Login();
+            GoogleIDLogin loginWindow = new GoogleIDLogin();
 
 
             bookWindow.DataContext = bookViewModel;

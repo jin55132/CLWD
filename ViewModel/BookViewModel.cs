@@ -22,7 +22,7 @@ namespace CLWD.ViewModel
     {
         #region Members
         private VocaDB _database = new VocaDB();
-        private LoginViewModel _login;
+        private GoogleIDLoginViewModel _login;
         private ObservableCollection<VocaViewModel> _book = new ObservableCollection<VocaViewModel>();
 
         #endregion
@@ -60,7 +60,7 @@ namespace CLWD.ViewModel
 
 
         #region Construction
-        public BookViewModel(LoginViewModel login)
+        public BookViewModel(GoogleIDLoginViewModel login)
         {
             _login = login;
 

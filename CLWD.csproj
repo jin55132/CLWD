@@ -64,16 +64,20 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Connector\Class1.cs" />
-    <Compile Include="Model\Account.cs" />
+    <Compile Include="Model\GoogleIDAccount.cs" />
     <Compile Include="ViewModel\BookViewModel.cs" />
     <Compile Include="Model\Voca.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
-    <Compile Include="ViewModel\LoginViewModel.cs" />
+    <Compile Include="ViewModel\GoogleIDLoginViewModel.cs" />
+    <Compile Include="ViewModel\GoogleOAuth2Login.cs" />
     <Compile Include="ViewModel\VocaViewModel.cs" />
     <Compile Include="MVVM\PropertySupport.cs" />
     <Compile Include="MVVM\RelayCommand.cs" />
     <Compile Include="DB\VocaDB.cs" />
-    <Page Include="View\Login.xaml">
+    <Compile Include="View\GoogleOAuth2Login.xaml.cs">
+      <DependentUpon>GoogleOAuth2Login.xaml</DependentUpon>
+    </Compile>
+    <Page Include="View\GoogleIDLogin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -85,13 +89,17 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\Login.xaml.cs">
-      <DependentUpon>Login.xaml</DependentUpon>
+    <Compile Include="View\GoogleIDLogin.xaml.cs">
+      <DependentUpon>GoogleIDLogin.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Book.xaml.cs">
       <DependentUpon>Book.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\GoogleOAuth2Login.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MVVM\ObservableObject.cs" />
