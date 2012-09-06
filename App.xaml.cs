@@ -64,18 +64,15 @@ namespace CLWD
             #endregion
 
 
-
-
-
             bookWindow.Show();
-
 
             if (!googleOAuth2LoginViewModel.Authorized)
             {
-
                 googleOAuth2Window.Show();
+
             }
-            
+
+            googleOAuth2LoginViewModel.Login();
             
 
             // When the ViewModel asks to be closed, 
@@ -94,10 +91,6 @@ namespace CLWD
             // the element tree.
             // 
             // 
-
-
-
-
 
 
         }

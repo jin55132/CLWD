@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using CLWD.ViewModel;
 
 namespace CLWD.View
 {
@@ -22,6 +23,29 @@ namespace CLWD.View
         public GoogleOAuth2Login()
         {
             InitializeComponent();
+        }
+
+        private void webBrowser1_LoadCompleted(object sender, NavigationEventArgs e)
+        {
+            var doc = (mshtml.IHTMLDocument2)webBrowser1.Document;
+
+            if (doc != null)
+            {
+                string title = string.Copy(doc.title);
+
+                if (title.StartsWith("Success code="))
+                {
+                  
+
+                    ((GoogleOAuth2LoginViewModel)this.DataContext).AccessCode = title.Remove(0, 13);
+                    ((GoogleOAuth2LoginViewModel)this.DataContext).OnRequestClose();
+                    //((GoogleOAuth2LoginViewModel)this.DataContext).Authorized = true;
+                    //((GoogleOAuth2LoginViewModel)this.DataContext).Authorized = true;
+                   
+                }
+            }
+
+ 
         }
     }
 }
