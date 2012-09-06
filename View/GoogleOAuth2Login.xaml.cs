@@ -17,7 +17,7 @@ namespace CLWD.View
     /// <summary>
     /// GoogleOAuth2Login.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class GoogleOAuth2Login : Page
+    public partial class GoogleOAuth2Login : Window
     {
         public GoogleOAuth2Login()
         {

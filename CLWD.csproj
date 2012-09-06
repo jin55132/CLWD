@@ -64,6 +64,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Connector\Class1.cs" />
+    <Compile Include="DP\WebBrowserUtility.cs" />
     <Compile Include="Model\GoogleIDAccount.cs" />
     <Compile Include="Model\GoogleOAuth2.cs" />
     <Compile Include="ViewModel\BookViewModel.cs" />

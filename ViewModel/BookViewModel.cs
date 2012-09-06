@@ -22,7 +22,7 @@ namespace CLWD.ViewModel
     {
         #region Members
         private VocaDB _database = new VocaDB();
-        private GoogleIDLoginViewModel _login;
+        private GoogleOAuth2LoginViewModel _login;
         private ObservableCollection<VocaViewModel> _book = new ObservableCollection<VocaViewModel>();
 
         #endregion
@@ -60,7 +60,8 @@ namespace CLWD.ViewModel
 
 
         #region Construction
-        public BookViewModel(GoogleIDLoginViewModel login)
+        //  나중에 추상화 해야함.. OAuth2 login
+        public BookViewModel(GoogleOAuth2LoginViewModel login)
         {
             _login = login;
 

@@ -1,13 +1,11 @@
-﻿<Page x:Class="CLWD.View.GoogleOAuth2Login"
+﻿<Window x:Class="CLWD.View.GoogleOAuth2Login"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      mc:Ignorable="d" 
-      d:DesignHeight="406" d:DesignWidth="433"
-	Title="GoogleOAuth2Login">
+      Height="444" Width="562"
+	Title="GoogleOAuth2Login" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow">
 
     <Grid>
         <WebBrowser Name="webBrowser1" />
     </Grid>
-</Page>
+</Window>

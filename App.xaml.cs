@@ -7,6 +7,7 @@ using System.Windows;
 using CLWD.ViewModel;
 using Microsoft.Win32;
 using CLWD.Model;
+using CLWD.View;
 
 namespace CLWD
 {
@@ -23,39 +24,56 @@ namespace CLWD
             // the main window binds.
             //string path = "Data/customers.xml";
 
-            var loginViewModel = new GoogleIDLoginViewModel();
-            var bookViewModel = new BookViewModel(loginViewModel);
+            //var googleIDloginViewModel = new GoogleIDLoginViewModel();
+            var googleOAuth2LoginViewModel = new GoogleOAuth2LoginViewModel();
+            var bookViewModel = new BookViewModel(googleOAuth2LoginViewModel);
 
             Book bookWindow = new Book();
-            GoogleIDLogin loginWindow = new GoogleIDLogin();
+            GoogleOAuth2Login googleOAuth2Window = new GoogleOAuth2Login();
+            //GoogleIDLogin loginWindow = new GoogleIDLogin();
 
 
             bookWindow.DataContext = bookViewModel;
-            loginWindow.DataContext = loginViewModel;
+            googleOAuth2Window.DataContext = googleOAuth2LoginViewModel;
 
 
             #region close command handler
+            //EventHandler handler = null;
+            //handler = delegate
+            //{
+            //    loginViewModel.RequestClose -= handler;
+            //    loginWindow.Close();
+            //};
+
+
+            //loginViewModel.RequestClose += handler;
+            //// loginViewModel.RequestClose += (s, eve) => loginWindow.Close();
+            
+            
             EventHandler handler = null;
             handler = delegate
             {
-                loginViewModel.RequestClose -= handler;
-                loginWindow.Close();
+                //googleOAuth2LoginViewModel.RequestClose -= handler;
+                googleOAuth2Window.Close();
             };
 
 
-            loginViewModel.RequestClose += handler;
-           // loginViewModel.RequestClose += (s, eve) => loginWindow.Close();
+            googleOAuth2LoginViewModel.RequestClose += handler;
+            // loginViewModel.RequestClose += (s, eve) => loginWindow.Close();
+            
             #endregion
+
+
 
 
 
             bookWindow.Show();
 
 
-            if (!loginViewModel.Authorized)
+            if (!googleOAuth2LoginViewModel.Authorized)
             {
-                 
-                loginWindow.Show();
+
+                googleOAuth2Window.Show();
             }
             
             
