@@ -106,7 +106,12 @@ namespace CLWD.ViewModel
         {
             PropertyChanged += ViewModelPropertyChanged;
 
+            PrepareLogin();
 
+        }
+
+        public void PrepareLogin()
+        {
             parameters.ClientId = "993296641183.apps.googleusercontent.com";
             parameters.ClientSecret = "u6ET18iH007SJ_jo6WdcNlA3";
             parameters.RedirectUri = "urn:ietf:wg:oauth:2.0:oob";
@@ -124,9 +129,7 @@ namespace CLWD.ViewModel
                 AuthorizationURI = OAuthUtil.CreateOAuth2AuthorizationUrl(parameters);
 
             }
-
         }
-
         public void ViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName.Equals("AccessCode"))

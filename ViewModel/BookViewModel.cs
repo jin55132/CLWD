@@ -22,7 +22,7 @@ namespace CLWD.ViewModel
     {
         #region Members
         private VocaDB _database = new VocaDB();
-        private GoogleOAuth2LoginViewModel _login;
+        private GoogleOAuth2LoginViewModel _loginViewModel;
         private ObservableCollection<VocaViewModel> _book = new ObservableCollection<VocaViewModel>();
 
         #endregion
@@ -46,11 +46,11 @@ namespace CLWD.ViewModel
         {
             get
             {
-                return _login.Authorized;
+                return _loginViewModel.Authorized;
             }
             set
             {
-                _login.Authorized = value;
+                _loginViewModel.Authorized = value;
                 
             }
         }
@@ -63,10 +63,10 @@ namespace CLWD.ViewModel
         //  나중에 추상화 해야함.. OAuth2 login
         public BookViewModel(GoogleOAuth2LoginViewModel login)
         {
-            _login = login;
+            _loginViewModel = login;
 
             //_login.PropertyChanged += LoginViewModelPropertyChanged;
-            _login.PropertyChanged += (obj, e) =>
+            _loginViewModel.PropertyChanged += (obj, e) =>
             {
                 if (e.PropertyName == "Authorized")
                     RaisePropertyChanged(e.PropertyName);
@@ -211,60 +211,55 @@ namespace CLWD.ViewModel
 
 
         #region Commands
-        void UpdateAlbumArtistsExecute()
+        void LogoutCommandExecute()
         {
-            //if (_songs == null)
-            //    return;
-
-            //++_count;
-            //foreach (var song in _songs)
-            //{
-            //    song.ArtistName = _database.GetRandomArtistName;
-            //}
+            Authorized = false;
+            _loginViewModel.PrepareLogin();
+            _loginViewModel.OnRequestOpen();
         }
 
-        bool CanUpdateAlbumArtistsExecute()
+        bool CanLogoutCommandExecute()
         {
             return true;
         }
 
-        public ICommand UpdateAlbumArtists { get { return new RelayCommand(UpdateAlbumArtistsExecute, CanUpdateAlbumArtistsExecute); } }
+        public ICommand LogoutCommand { get { return new RelayCommand(LogoutCommandExecute, CanLogoutCommandExecute); } }
 
 
-        void AddAlbumArtistExecute()
-        {
-            //    if (_songs == null)
-            //        return;
+        //void AddAlbumArtistExecute()
+        //{
+        //    //    if (_songs == null)
+        //    //        return;
 
-            //    _songs.Add(new SongViewModel { Song = new Song { ArtistName = _database.GetRandomArtistName, SongTitle = _database.GetRandomSongTitle } });
-            //
-        }
+        //    //    _songs.Add(new SongViewModel { Song = new Song { ArtistName = _database.GetRandomArtistName, SongTitle = _database.GetRandomSongTitle } });
+        //    //
+        //}
 
-        bool CanAddAlbumArtistExecute()
-        {
-            return true;
-        }
+        //bool CanAddAlbumArtistExecute()
+        //{
+        //    return true;
+        //}
 
-        public ICommand AddAlbumArtist { get { return new RelayCommand(AddAlbumArtistExecute, CanAddAlbumArtistExecute); } }
+        //public ICommand AddAlbumArtist { get { return new RelayCommand(AddAlbumArtistExecute, CanAddAlbumArtistExecute); } }
 
-        void UpdateSongTitlesExecute()
-        {
-            //if (_songs == null)
-            //    return;
+        //void UpdateSongTitlesExecute()
+        //{
+        //    //if (_songs == null)
+        //    //    return;
 
-            //++_count;
-            //foreach (var song in _songs)
-            //{
-            //    song.SongTitle = _database.GetRandomSongTitle;
-            //}
-        }
+        //    //++_count;
+        //    //foreach (var song in _songs)
+        //    //{
+        //    //    song.SongTitle = _database.GetRandomSongTitle;
+        //    //}
+        //}
 
-        bool CanUpdateSongTitlesExecute()
-        {
-            return true;
-        }
+        //bool CanUpdateSongTitlesExecute()
+        //{
+        //    return true;
+        //}
 
-        public ICommand UpdateSongTitles { get { return new RelayCommand(UpdateSongTitlesExecute, CanUpdateSongTitlesExecute); } }
+        //public ICommand UpdateSongTitles { get { return new RelayCommand(UpdateSongTitlesExecute, CanUpdateSongTitlesExecute); } }
 
         #endregion
     }

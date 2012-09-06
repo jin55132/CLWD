@@ -16,6 +16,9 @@ namespace CLWD
     /// </summary>
     public partial class App : Application
     {
+
+        private GoogleOAuth2Login googleOAuth2Window = null;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -29,13 +32,15 @@ namespace CLWD
             var bookViewModel = new BookViewModel(googleOAuth2LoginViewModel);
 
             Book bookWindow = new Book();
-            GoogleOAuth2Login googleOAuth2Window = new GoogleOAuth2Login();
+            googleOAuth2Window = new GoogleOAuth2Login();
+           //googleOAuth2Window.Owner = bookWindow;
             //GoogleIDLogin loginWindow = new GoogleIDLogin();
 
 
             bookWindow.DataContext = bookViewModel;
             googleOAuth2Window.DataContext = googleOAuth2LoginViewModel;
 
+            
 
             #region close command handler
             //EventHandler handler = null;
@@ -48,23 +53,25 @@ namespace CLWD
 
             //loginViewModel.RequestClose += handler;
             //// loginViewModel.RequestClose += (s, eve) => loginWindow.Close();
-            
-            
-            EventHandler handler = null;
-            handler = delegate
-            {
-                //googleOAuth2LoginViewModel.RequestClose -= handler;
-                googleOAuth2Window.Close();
-            };
 
 
-            googleOAuth2LoginViewModel.RequestClose += handler;
-            // loginViewModel.RequestClose += (s, eve) => loginWindow.Close();
+            //EventHandler handler = null;
+            //handler = delegate
+            //{   //googleOAuth2LoginViewModel.RequestClose -= handler;
+            //    googleOAuth2Window.Close();
+            //};
+            //googleOAuth2LoginViewModel.RequestClose += handler;
+
+            //bookViewModel.RequestClose += (s, eve) => bookWindow.Hide();
+            
+            googleOAuth2LoginViewModel.RequestClose += (s, eve) => googleOAuth2Window.Close();
+            googleOAuth2LoginViewModel.RequestOpen += (s, eve) => googleOAuth2Window.Show();
             
             #endregion
 
 
             bookWindow.Show();
+            
 
             if (!googleOAuth2LoginViewModel.Authorized)
             {
@@ -74,26 +81,9 @@ namespace CLWD
 
             googleOAuth2LoginViewModel.Login();
             
-
-            // When the ViewModel asks to be closed, 
-            // close the window.
-            //EventHandler handler = null;
-            //handler = delegate
-            //{
-            //    viewModel.RequestClose -= handler;
-            //    window.Close();
-            //};
-            //viewModel.RequestClose += handler;
-
-            // Allow all controls in the window to 
-            // bind to the ViewModel by setting the 
-            // DataContext, which propagates down 
-            // the element tree.
-            // 
-            // 
-
-
         }
+
+
 
 
     }
