@@ -18,30 +18,24 @@ namespace CLWD
     {
 
         private GoogleOAuth2Login googleOAuth2Window = null;
+       // private GoogleOAuth2LoginViewModel googleOAuth2LoginViewModel = null;
+        private Book bookWindow = null;
+        private BookViewModel bookViewModel = null;
+        
+        
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            // Create the ViewModel to which 
-            // the main window binds.
-            //string path = "Data/customers.xml";
+            // ViewModels
+            bookViewModel = new BookViewModel();
 
-            //var googleIDloginViewModel = new GoogleIDLoginViewModel();
-            var googleOAuth2LoginViewModel = new GoogleOAuth2LoginViewModel();
-            var bookViewModel = new BookViewModel(googleOAuth2LoginViewModel);
-
-            Book bookWindow = new Book();
-            googleOAuth2Window = new GoogleOAuth2Login();
-           //googleOAuth2Window.Owner = bookWindow;
-            //GoogleIDLogin loginWindow = new GoogleIDLogin();
-
-
+            // Windows
+            bookWindow = new Book();
             bookWindow.DataContext = bookViewModel;
-            googleOAuth2Window.DataContext = googleOAuth2LoginViewModel;
-
+          
             
-
             #region close command handler
             //EventHandler handler = null;
             //handler = delegate
@@ -64,27 +58,32 @@ namespace CLWD
 
             //bookViewModel.RequestClose += (s, eve) => bookWindow.Hide();
             
-            googleOAuth2LoginViewModel.RequestClose += (s, eve) => googleOAuth2Window.Close();
-            googleOAuth2LoginViewModel.RequestOpen += (s, eve) => googleOAuth2Window.Show();
+
             
             #endregion
 
+            // is it ok to be here..??
+            bookViewModel.GoogleOAuth2LoginViewModel.RequestClose += (s, eve) => googleOAuth2Window.Close();
+            bookViewModel.GoogleOAuth2LoginViewModel.RequestHide += (s, eve) => googleOAuth2Window.Hide();
+            bookViewModel.GoogleOAuth2LoginViewModel.RequestShow += (s, eve) => googleOAuth2Window.Show();
+            // googleOAuth2LoginViewModel.RequestOpen += (s, eve) => googleOAuth2Window.Show();
 
             bookWindow.Show();
+            bookViewModel.GoogleOAuth2LoginViewModel.initialize();
+
             
 
-            if (!googleOAuth2LoginViewModel.Authorized)
-            {
-                googleOAuth2Window.Show();
-
-            }
-
-            googleOAuth2LoginViewModel.Login();
+            //googleOAuth2LoginViewModel.Login();
             
         }
 
 
-
+        public void CreateLoginWindow(GoogleOAuth2LoginViewModel vm)
+        {
+            googleOAuth2Window = new GoogleOAuth2Login();
+            googleOAuth2Window.DataContext = vm;
+         
+        }
 
     }
 

@@ -66,13 +66,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Connector\Class1.cs" />
-    <Compile Include="DP\WebBrowserUtility.cs" />
+    <Compile Include="Helpher\CacheClear.cs" />
+    <Compile Include="Helpher\Class1.cs" />
+    <Compile Include="DP\AttachedProperties.cs" />
     <Compile Include="Model\GoogleIDAccount.cs" />
     <Compile Include="Model\GoogleOAuth2.cs" />
     <Compile Include="ViewModel\BookViewModel.cs" />
     <Compile Include="Model\Voca.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\Container.cs" />
     <Compile Include="ViewModel\GoogleIDLoginViewModel.cs" />
     <Compile Include="ViewModel\GoogleOAuth2LoginViewModel.cs" />
     <Compile Include="ViewModel\VocaViewModel.cs" />

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CLWD.Model
 {
-    class GoogleOAuth2 : ObservableObject
+    public class GoogleOAuth2 : ObservableObject
     {
         #region Members
         string _accessToken;

@@ -47,5 +47,12 @@ namespace CLWD.View
 
  
         }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            ((GoogleOAuth2LoginViewModel)this.DataContext).WindowAlive = false ;
+        }
+
+     
     }
 }

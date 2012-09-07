@@ -9,11 +9,13 @@ using Google.Spreadsheets;
 using Microsoft.Win32;
 using Google.GData.Client;
 using System.ComponentModel;
+using System.Windows.Data;
+using System.Globalization;
 
 
 namespace CLWD.ViewModel
 {
-    class GoogleOAuth2LoginViewModel : BaseViewModel
+    public class GoogleOAuth2LoginViewModel : BaseViewModel
     {
         #region Members
         /// <summary>
@@ -23,17 +25,22 @@ namespace CLWD.ViewModel
         private GoogleOAuth2 _oauth2;
         private string _accessCode;
         private string _authorizationUrl;
-        private OAuth2Parameters parameters = new OAuth2Parameters();
+        private bool _showButton;
+
+        private OAuth2Parameters parameters;
         #endregion
 
         #region Constructor
         public GoogleOAuth2LoginViewModel()
         {
             _oauth2 = new GoogleOAuth2();
-            _authorized = false;
-           
-            LoadFromRegistry();
-            
+            _showButton = true;
+
+            PropertyChanged += ViewModelPropertyChanged;
+
+
+
+
         }
         #endregion
 
@@ -98,48 +105,78 @@ namespace CLWD.ViewModel
             }
 
         }
-   
+
+        public bool ShowButton
+        {
+            get { return _showButton; }
+            set
+            {
+                _showButton = value;
+                RaisePropertyChanged("ShowButton");
+            }
+        }
+
+
 
         #endregion
 
+        public void initialize()
+        {
+            ShowButton = true;
+            LoadFromRegistry();
+
+            if (!Authorized)
+            {
+                //창생성후 로그인 준비
+                ((App)App.Current).CreateLoginWindow(this);
+
+                OnRequestShow();
+
+            }
+        }
+
+        public void uninitialize()
+        {
+            AuthorizationURI = "about:blank";
+            AccessToken = "";
+            _accessCode = "";
+            Authorized = false;
+            DeleteFromRegistry();
+        }
+
         public void Login()
         {
-            PropertyChanged += ViewModelPropertyChanged;
 
-            PrepareLogin();
+            BuildParameter();
+
+            AuthorizationURI = OAuthUtil.CreateOAuth2AuthorizationUrl(parameters);
 
         }
 
-        public void PrepareLogin()
+        public void BuildParameter()
         {
+            parameters = new OAuth2Parameters();
             parameters.ClientId = "993296641183.apps.googleusercontent.com";
             parameters.ClientSecret = "u6ET18iH007SJ_jo6WdcNlA3";
             parameters.RedirectUri = "urn:ietf:wg:oauth:2.0:oob";
+            parameters.AccessToken = AccessToken;
             parameters.Scope = "https://docs.google.com/feeds/ https://docs.googleusercontent.com/ https://spreadsheets.google.com/feeds/ https://www.googleapis.com/auth/userinfo.profile";
-
-
-            if (Authorized)
-            {
-                parameters.AccessToken = AccessToken;
-                OnRequestClose();
-
-            }
-            else
-            {
-                AuthorizationURI = OAuthUtil.CreateOAuth2AuthorizationUrl(parameters);
-
-            }
         }
+
         public void ViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName.Equals("AccessCode"))
             {
-                parameters.AccessCode = AccessCode;
-                OAuthUtil.GetAccessToken(parameters);
+                if (parameters != null)
+                {
+                    parameters.AccessCode = AccessCode;
+                    OAuthUtil.GetAccessToken(parameters);
 
-                AccessToken = parameters.AccessToken;
-                Authorized = true;
-                SaveToRegistry();
+                    AccessToken = parameters.AccessToken;
+                    Authorized = true;
+                    SaveToRegistry();
+
+                }
 
                 //GOAuth2RequestFactory requestFactory = new GOAuth2RequestFactory(null, "MySpreadsheetIntegration-v1", parameters);
                 //SpreadsheetsService service = new SpreadsheetsService("MySpreadsheetIntegration-v1");
@@ -167,6 +204,7 @@ namespace CLWD.ViewModel
             if (!AccessToken.Equals(""))
             {
                 Authorized = true;
+                BuildParameter();
             }
             else
             {
@@ -183,13 +221,76 @@ namespace CLWD.ViewModel
                 key.SetValue("AccessToken", AccessToken);
 
             }
-            else
+
+        }
+
+        public void DeleteFromRegistry()
+        {
+            RegistryKey key = Registry.LocalMachine.CreateSubKey("Software").CreateSubKey("CLWD");
+
+            AccessToken = (string)key.GetValue("AccessToken", "");
+
+
+            if (!AccessToken.Equals(""))
             {
                 key.DeleteValue("AccessToken");
-
             }
 
         }
 
+
+        #region Commands
+        void SigninCommandExecute()
+        {
+            ShowButton = false;
+
+            Login();
+
+
+        }
+
+        bool CanSigninCommandExecute()
+        {
+            return true;
+        }
+
+        public ICommand SigninCommand
+        {
+            get
+            {
+                return new RelayCommand(SigninCommandExecute, CanSigninCommandExecute);
+            }
+        }
+        #endregion
+
+
+    }
+
+
+    [ValueConversion(typeof(bool), typeof(Visibility))]
+    public class VisibilityConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type targetType,
+            object parameter, CultureInfo culture)
+        {
+            bool isAuthorized = (bool)value;
+
+            if (isAuthorized)
+            {
+                return Visibility.Hidden;
+            }
+            else
+            {
+                return Visibility.Visible;
+            }
+        }
+
+
+        public object ConvertBack(object value, Type targetType,
+            object parameter, CultureInfo culture)
+        {
+            return null;
+        }
     }
 }

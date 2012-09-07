@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using CLWD.ViewModel;
 
 namespace CLWD
 {
@@ -22,6 +23,16 @@ namespace CLWD
         public Book()
         {
             InitializeComponent();
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ((BookViewModel)this.DataContext).Closing();
         }
     }
 }

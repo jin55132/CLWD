@@ -4,9 +4,10 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:ns="clr-namespace:CLWD.DP"
       Height="640" Width="640"
-	Title="GoogleOAuth2Login" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow">
+	Title="GoogleOAuth2Login" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow" Closed="Window_Closed">
 
     <Grid>
-        <WebBrowser Name="webBrowser1" ns:WebBrowserUtility.BindableSource="{Binding AuthorizationURI}" LoadCompleted="webBrowser1_LoadCompleted"/>
+        <WebBrowser Name="webBrowser1" ns:AttachedProperties.BindableSource="{Binding AuthorizationURI}" LoadCompleted="webBrowser1_LoadCompleted"  ns:AttachedProperties.ShowInLogin="{Binding ShowButton}" />
+        <Button Content="Sign in Google" Height="59" HorizontalAlignment="Left" Margin="243,271,0,0" Name="button1" VerticalAlignment="Top" Width="149"  ns:AttachedProperties.ShowInLogin="{Binding ShowButton}" Command="{Binding Path=SigninCommand}"/>
     </Grid>
 </Window>

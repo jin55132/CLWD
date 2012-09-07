@@ -11,7 +11,9 @@ namespace CLWD.ViewModel
         #region Fields
 
         RelayCommand _closeCommand;
-        RelayCommand _openCommand;
+        RelayCommand _showCommand;
+        RelayCommand _hideCommand;
+        private bool _windowAlive;
         #endregion // Fields
 
 
@@ -19,6 +21,8 @@ namespace CLWD.ViewModel
 
         protected BaseViewModel()
         {
+            _windowAlive = false;
+
         }
 
         #endregion // Constructor
@@ -51,20 +55,44 @@ namespace CLWD.ViewModel
             }
         }
 
-        public ICommand OpenCommand
+        public ICommand ShowCommand
         {
             get
             {
-                if (_openCommand == null)
-                    _openCommand = new RelayCommand(() => this.OnRequestOpen());
+                if (_showCommand == null)
+                    _showCommand = new RelayCommand(() => this.OnRequestShow());
 
-                return _openCommand;
+                return _showCommand;
             }
         }
-        #endregion // OpenCommand
+
+        public ICommand HideCommand
+        {
+            get
+            {
+                if (_hideCommand == null)
+                    _hideCommand = new RelayCommand(() => this.OnRequestHide());
+
+                return _showCommand;
+            }
+        }
+
+        public bool WindowAlive
+        {
+            get
+            {
+                return _windowAlive;
+            }
+            set
+            {
+                _windowAlive = value;
+                RaisePropertyChanged("WindowAlive");
+            }
+        }
+        #endregion // ShowCommand
 
 
-        #region RequestClose [event]
+        #region Request [event]
 
         /// <summary>
         /// Raised when this workspace should be removed from the UI.
@@ -73,19 +101,31 @@ namespace CLWD.ViewModel
 
         public void OnRequestClose()
         {
+            WindowAlive = false;
             EventHandler handler = this.RequestClose;
             if (handler != null)
                 handler(this, EventArgs.Empty);
         }
 
-        public event EventHandler RequestOpen;
+        public event EventHandler RequestShow;
 
-        public void OnRequestOpen()
+        public void OnRequestShow()
         {
-            EventHandler handler = this.RequestOpen;
+            WindowAlive = true;
+            EventHandler handler = this.RequestShow;
             if (handler != null)
                 handler(this, EventArgs.Empty);
         }
+
+        public event EventHandler RequestHide;
+
+        public void OnRequestHide()
+        {
+            EventHandler handler = this.RequestHide;
+            if (handler != null)
+                handler(this, EventArgs.Empty);
+        }
+
         #endregion // RequestClose [event]
         #region IDisposable Members
 
@@ -122,4 +162,5 @@ namespace CLWD.ViewModel
 
 
     }
+
 }

@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows.Threading;
 using System.Windows;
+using CLWD.Helpher;
 
 namespace CLWD.ViewModel
 {
@@ -24,6 +25,7 @@ namespace CLWD.ViewModel
         private VocaDB _database = new VocaDB();
         private GoogleOAuth2LoginViewModel _loginViewModel;
         private ObservableCollection<VocaViewModel> _book = new ObservableCollection<VocaViewModel>();
+
 
         #endregion
         
@@ -54,23 +56,35 @@ namespace CLWD.ViewModel
                 
             }
         }
-        
+
+
+        public GoogleOAuth2LoginViewModel GoogleOAuth2LoginViewModel
+        {
+            get
+            {
+                return _loginViewModel;
+
+            }
+            set
+            {
+                if (_loginViewModel != value)
+                    _loginViewModel = value;
+            }
+        }
         #endregion
 
 
 
         #region Construction
         //  나중에 추상화 해야함.. OAuth2 login
-        public BookViewModel(GoogleOAuth2LoginViewModel login)
+        public BookViewModel()
         {
-            _loginViewModel = login;
+            _loginViewModel = new GoogleOAuth2LoginViewModel();
 
-            //_login.PropertyChanged += LoginViewModelPropertyChanged;
             _loginViewModel.PropertyChanged += (obj, e) =>
             {
                 if (e.PropertyName == "Authorized")
                     RaisePropertyChanged(e.PropertyName);
-
             };
 
             for (int i = 0; i < 3; ++i)
@@ -82,13 +96,13 @@ namespace CLWD.ViewModel
 
             }
 
-            //_book.CollectionChanged += new NotifyCollectionChangedEventHandler(changed);
             _book.CollectionChanged += changed;
-
-
 
         }
         #endregion
+
+
+     
 
         public void changed(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -211,21 +225,34 @@ namespace CLWD.ViewModel
 
 
         #region Commands
-        void LogoutCommandExecute()
+        
+        void LoginExecute()
         {
-            Authorized = false;
-            _loginViewModel.PrepareLogin();
-            _loginViewModel.OnRequestOpen();
+            GoogleOAuth2LoginViewModel.uninitialize();
+            GoogleOAuth2LoginViewModel.initialize();
+        }
+
+
+        bool CanLoginCommandExecute()
+        {
+            return !Authorized && !GoogleOAuth2LoginViewModel.WindowAlive; ;
         }
 
         bool CanLogoutCommandExecute()
         {
-            return true;
+            return Authorized && !GoogleOAuth2LoginViewModel.WindowAlive;
         }
+        public ICommand LoginCommand { get { return new RelayCommand(LoginExecute, CanLoginCommandExecute); } }
+        public ICommand LogoutCommand { get { return new RelayCommand(LoginExecute, CanLogoutCommandExecute); } }
 
-        public ICommand LogoutCommand { get { return new RelayCommand(LogoutCommandExecute, CanLogoutCommandExecute); } }
 
 
+
+        public void Closing()
+        {
+            if (GoogleOAuth2LoginViewModel.WindowAlive)
+                GoogleOAuth2LoginViewModel.OnRequestClose();
+        }
         //void AddAlbumArtistExecute()
         //{
         //    //    if (_songs == null)
