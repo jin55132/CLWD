@@ -22,7 +22,7 @@ namespace CLWD.ViewModel
 
     {
         #region Members
-        private VocaDB _database = new VocaDB();
+        private SpreadSheetDB _database;
         private GoogleOAuth2LoginViewModel _loginViewModel;
         private ObservableCollection<VocaViewModel> _book = new ObservableCollection<VocaViewModel>();
 
@@ -87,24 +87,44 @@ namespace CLWD.ViewModel
                     RaisePropertyChanged(e.PropertyName);
             };
 
-            for (int i = 0; i < 3; ++i)
-            {
-                VocaViewModel vocavm = new VocaViewModel { Voca = new Voca { Word = _database.GetRandomWord, Meaning = _database.GetRandomMeaning } };
-                vocavm.PropertyChanged += EntityViewModelPropertyChanged;
-                _book.Add(vocavm);
-                //_book.Add(new VocaViewModel { Voca = new Voca { Word = _database.GetRandomWord, Meaning = _database.GetRandomMeaning} });
 
-            }
-
-            _book.CollectionChanged += changed;
+            _book.CollectionChanged += VocaViewModel_PropertyChanged;
+            
+            PropertyChanged += new PropertyChangedEventHandler(BookViewModel_PropertyChanged);
 
         }
-        #endregion
+
+        #endregion+		GoogleOAuth2LoginViewModel	{CLWD.ViewModel.GoogleOAuth2LoginViewModel}	CLWD.ViewModel.GoogleOAuth2LoginViewModel
 
 
-     
+        protected void Insert(Voca voca)
+        {
+            VocaViewModel vocaVM = new VocaViewModel { Voca = voca };
+            vocaVM.PropertyChanged += EntityViewModelPropertyChanged;
+            _book.Add(vocaVM);
 
-        public void changed(object sender, NotifyCollectionChangedEventArgs e)
+        }
+
+        void BookViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+
+            if (e.PropertyName == "Authorized")
+            {
+                if (Authorized)
+                {
+                    _database = new SpreadSheetDB(GoogleOAuth2LoginViewModel.OAuth2);
+                    _database.Init();
+                    
+                }
+                else
+                {
+
+                }
+            }
+
+        }
+
+        void VocaViewModel_PropertyChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {

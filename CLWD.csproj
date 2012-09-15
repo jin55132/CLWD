@@ -80,7 +80,7 @@
     <Compile Include="ViewModel\VocaViewModel.cs" />
     <Compile Include="MVVM\PropertySupport.cs" />
     <Compile Include="MVVM\RelayCommand.cs" />
-    <Compile Include="DB\VocaDB.cs" />
+    <Compile Include="DB\SpreadSheetDB.cs" />
     <Compile Include="View\GoogleOAuth2Login.xaml.cs">
       <DependentUpon>GoogleOAuth2Login.xaml</DependentUpon>
     </Compile>

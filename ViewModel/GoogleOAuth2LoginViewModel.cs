@@ -27,7 +27,7 @@ namespace CLWD.ViewModel
         private string _authorizationUrl;
         private bool _showButton;
 
-        private OAuth2Parameters parameters;
+        
         #endregion
 
         #region Constructor
@@ -37,9 +37,6 @@ namespace CLWD.ViewModel
             _showButton = true;
 
             PropertyChanged += ViewModelPropertyChanged;
-
-
-
 
         }
         #endregion
@@ -129,7 +126,6 @@ namespace CLWD.ViewModel
             {
                 //창생성후 로그인 준비
                 ((App)App.Current).CreateLoginWindow(this);
-
                 OnRequestShow();
 
             }
@@ -146,33 +142,19 @@ namespace CLWD.ViewModel
 
         public void Login()
         {
-
-            BuildParameter();
-
-            AuthorizationURI = OAuthUtil.CreateOAuth2AuthorizationUrl(parameters);
-
-        }
-
-        public void BuildParameter()
-        {
-            parameters = new OAuth2Parameters();
-            parameters.ClientId = "993296641183.apps.googleusercontent.com";
-            parameters.ClientSecret = "u6ET18iH007SJ_jo6WdcNlA3";
-            parameters.RedirectUri = "urn:ietf:wg:oauth:2.0:oob";
-            parameters.AccessToken = AccessToken;
-            parameters.Scope = "https://docs.google.com/feeds/ https://docs.googleusercontent.com/ https://spreadsheets.google.com/feeds/ https://www.googleapis.com/auth/userinfo.profile";
+            AuthorizationURI = OAuthUtil.CreateOAuth2AuthorizationUrl(OAuth2.Parameters);
         }
 
         public void ViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName.Equals("AccessCode"))
             {
-                if (parameters != null)
+                if (OAuth2.Parameters != null)
                 {
-                    parameters.AccessCode = AccessCode;
-                    OAuthUtil.GetAccessToken(parameters);
+                    OAuth2.Parameters.AccessCode = AccessCode;
+                    OAuthUtil.GetAccessToken(OAuth2.Parameters);
 
-                    AccessToken = parameters.AccessToken;
+                    AccessToken = OAuth2.Parameters.AccessToken;
                     Authorized = true;
                     SaveToRegistry();
 
@@ -204,7 +186,6 @@ namespace CLWD.ViewModel
             if (!AccessToken.Equals(""))
             {
                 Authorized = true;
-                BuildParameter();
             }
             else
             {
