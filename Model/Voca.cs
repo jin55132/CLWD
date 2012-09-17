@@ -9,7 +9,8 @@ namespace CLWD.Model
     {
         #region Members
         string _word;
-        string _meaning;
+        string _definition;
+        DateTime _date;
         #endregion
 
 
@@ -20,17 +21,27 @@ namespace CLWD.Model
             set
             {
                 _word = value;
-                RaisePropertyChanged("Word");
+                //RaisePropertyChanged("Word");
             }
         }
 
-        public string Meaning
+        public string Definition
         {
-            get { return _meaning; }
+            get { return _definition; }
             set
             {
-                _meaning = value;
-                RaisePropertyChanged("Meaning");
+                _definition = value;
+                //RaisePropertyChanged("Definition");
+            }
+        }
+
+        public DateTime Date
+        {
+            get { return _date; }
+            set
+            {
+                _date = value;
+                //RaisePropertyChanged("Date");
             }
         }
         #endregion

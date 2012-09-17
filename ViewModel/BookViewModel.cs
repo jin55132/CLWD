@@ -19,7 +19,6 @@ using CLWD.Helpher;
 namespace CLWD.ViewModel
 {
     class BookViewModel : BaseViewModel
-
     {
         #region Members
         private SpreadSheetDB _database;
@@ -28,8 +27,8 @@ namespace CLWD.ViewModel
 
 
         #endregion
-        
-       
+
+
 
         #region Properties
         public ObservableCollection<VocaViewModel> Book
@@ -53,7 +52,7 @@ namespace CLWD.ViewModel
             set
             {
                 _loginViewModel.Authorized = value;
-                
+
             }
         }
 
@@ -89,20 +88,18 @@ namespace CLWD.ViewModel
 
 
             _book.CollectionChanged += VocaViewModel_PropertyChanged;
-            
+
             PropertyChanged += new PropertyChangedEventHandler(BookViewModel_PropertyChanged);
 
         }
 
-        #endregion+		GoogleOAuth2LoginViewModel	{CLWD.ViewModel.GoogleOAuth2LoginViewModel}	CLWD.ViewModel.GoogleOAuth2LoginViewModel
+        #endregion
 
 
-        protected void Insert(Voca voca)
+        public void Insert(VocaViewModel vocaVM)
         {
-            VocaViewModel vocaVM = new VocaViewModel { Voca = voca };
-            vocaVM.PropertyChanged += EntityViewModelPropertyChanged;
+            //VocaViewModel vocaVM = new VocaViewModel { Voca = voca };
             _book.Add(vocaVM);
-
         }
 
         void BookViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -114,7 +111,9 @@ namespace CLWD.ViewModel
                 {
                     _database = new SpreadSheetDB(GoogleOAuth2LoginViewModel.OAuth2);
                     _database.Init();
-                    
+                    _database.Retrieve(this);
+
+
                 }
                 else
                 {
@@ -132,6 +131,23 @@ namespace CLWD.ViewModel
                 {
                     //Removed items
                     item.PropertyChanged -= EntityViewModelPropertyChanged;
+
+                    ThreadStart start = delegate()
+                    {
+
+                        try
+                        {
+                            _database.Remove(item);
+                        }
+                        catch
+                        {
+
+                        }
+
+                    };
+
+                    new Thread(start).Start();
+
                 }
             }
             else if (e.Action == NotifyCollectionChangedAction.Add)
@@ -152,9 +168,13 @@ namespace CLWD.ViewModel
             {
                 VocaViewModel vocaVM = ((VocaViewModel)sender);
 
+
                 ThreadStart start = delegate()
                 {
+
                     //WordReference 통해 단어의미 획득..json
+                    long oldDate = vocaVM.UnixTime;
+
                     try
                     {
                         string jsonUri = generateUrl(vocaVM.Word);
@@ -169,14 +189,28 @@ namespace CLWD.ViewModel
                         {
                             var responseText = streamReader.ReadToEnd();
                             jstring = responseText;
-
+                            
                         }
-                        vocaVM.Meaning = jsonProcessor(jstring);
+
+
+                        vocaVM.Definition = jsonProcessor(jstring);
+                        vocaVM.Date = DateTime.Now;
+
+
 
                     }
                     catch
                     {
-                        vocaVM.Meaning = "No Match";
+                        vocaVM.Definition = "No Match";
+                    }
+
+                    try
+                    {
+                        _database.Update(vocaVM, oldDate);
+                    }
+                    catch
+                    {
+
                     }
 
                 };
@@ -213,12 +247,19 @@ namespace CLWD.ViewModel
                 string strTerm = (string)term.GetValue();
                 string strPos = (string)pos.GetValue();
 
-                string voca = string.Format("{0}:({1}) {2}\n", count++, strPos, strTerm);
-
+                string voca;
+                if (term0.Count == count + 1)
+                {
+                     voca = string.Format("{0}:({1}) {2}", count++, strPos, strTerm);
+                }
+                else
+                {
+                     voca = string.Format("{0}:({1}) {2}\n", count++, strPos, strTerm);
+                }
+               
 
                 meaning += voca;
             }
-
 
 
             return meaning;
@@ -245,9 +286,10 @@ namespace CLWD.ViewModel
 
 
         #region Commands
-        
+
         void LoginExecute()
         {
+            Book.Clear();
             GoogleOAuth2LoginViewModel.uninitialize();
             GoogleOAuth2LoginViewModel.initialize();
         }

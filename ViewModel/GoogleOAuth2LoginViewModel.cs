@@ -23,7 +23,7 @@ namespace CLWD.ViewModel
         /// </summary>
         private bool _authorized;
         private GoogleOAuth2 _oauth2;
-        private string _accessCode;
+        //private string _accessCode;
         private string _authorizationUrl;
         private bool _showButton;
 
@@ -58,26 +58,13 @@ namespace CLWD.ViewModel
 
         public string AccessCode
         {
-            get { return _accessCode; }
+            get { return OAuth2.Parameters.AccessCode; }
             set
             {
-                if (_accessCode != value)
+                if (OAuth2.Parameters.AccessCode != value)
                 {
-                    _accessCode = value;
+                    OAuth2.Parameters.AccessCode = value;
                     RaisePropertyChanged("AccessCode");
-                }
-            }
-        }
-
-        public string AccessToken
-        {
-            get { return OAuth2.AccessToken; }
-            set
-            {
-                if (OAuth2.AccessToken != value)
-                {
-                    OAuth2.AccessToken = value;
-                    RaisePropertyChanged("AccessToken");
                 }
             }
         }
@@ -127,15 +114,14 @@ namespace CLWD.ViewModel
                 //창생성후 로그인 준비
                 ((App)App.Current).CreateLoginWindow(this);
                 OnRequestShow();
-
             }
         }
 
         public void uninitialize()
         {
             AuthorizationURI = "about:blank";
-            AccessToken = "";
-            _accessCode = "";
+            //AccessToken = "";
+            //_accessCode = "";
             Authorized = false;
             DeleteFromRegistry();
         }
@@ -153,10 +139,10 @@ namespace CLWD.ViewModel
                 {
                     OAuth2.Parameters.AccessCode = AccessCode;
                     OAuthUtil.GetAccessToken(OAuth2.Parameters);
-
-                    AccessToken = OAuth2.Parameters.AccessToken;
-                    Authorized = true;
                     SaveToRegistry();
+                    //AccessToken = OAuth2.Parameters.AccessToken;
+                    Authorized = true;
+                   
 
                 }
 
@@ -180,10 +166,10 @@ namespace CLWD.ViewModel
             RegistryKey key = Registry.LocalMachine.OpenSubKey("Software", true).CreateSubKey("CLWD");
 
 
-            AccessToken = (string)key.GetValue("AccessToken", "");
+            OAuth2.Parameters.AccessToken = (string)key.GetValue("AccessToken", "");
+            OAuth2.Parameters.RefreshToken = (string)key.GetValue("RefreshToken", "");
 
-
-            if (!AccessToken.Equals(""))
+            if (!OAuth2.Parameters.AccessToken.Equals("") && !OAuth2.Parameters.RefreshToken.Equals(""))
             {
                 Authorized = true;
             }
@@ -197,11 +183,13 @@ namespace CLWD.ViewModel
         {
             RegistryKey key = Registry.LocalMachine.CreateSubKey("Software").CreateSubKey("CLWD");
 
-            if (Authorized == true)
-            {
-                key.SetValue("AccessToken", AccessToken);
+            // always invoked when authrized..
+            //if (Authorized == true)
+            //{
+                key.SetValue("AccessToken", OAuth2.Parameters.AccessToken);
+                key.SetValue("RefreshToken", OAuth2.Parameters.RefreshToken);
 
-            }
+            //}
 
         }
 
@@ -209,12 +197,17 @@ namespace CLWD.ViewModel
         {
             RegistryKey key = Registry.LocalMachine.CreateSubKey("Software").CreateSubKey("CLWD");
 
-            AccessToken = (string)key.GetValue("AccessToken", "");
+            OAuth2.Parameters.AccessToken = (string)key.GetValue("AccessToken", "");
 
 
-            if (!AccessToken.Equals(""))
+            if (!OAuth2.Parameters.AccessToken.Equals(""))
             {
                 key.DeleteValue("AccessToken");
+            }
+
+            if (!OAuth2.Parameters.RefreshToken.Equals(""))
+            {
+                key.DeleteValue("RefreshToken");
             }
 
         }
