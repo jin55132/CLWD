@@ -23,6 +23,12 @@ namespace CLWD.View
         public GoogleOAuth2Login()
         {
             InitializeComponent();
+            label1.Content =
+                "The Google Words requires access to spreadsheet of your Google Drive.\n" +
+                "The words you save will be seen as list in the spreadsheet titled \"Google Words Spreadsheet\"\n\n" +
+                "Modifying the first column of the spreadsheet might result in crash.\n\n";
+               
+               
         }
 
         private void webBrowser1_LoadCompleted(object sender, NavigationEventArgs e)

@@ -11,6 +11,7 @@ namespace CLWD.Model
         string _word;
         string _definition;
         DateTime _date;
+        int _key;
         #endregion
 
 
@@ -41,6 +42,16 @@ namespace CLWD.Model
             set
             {
                 _date = value;
+                //RaisePropertyChanged("Date");
+            }
+        }
+
+        public int Key
+        {
+            get { return _key; }
+            set
+            {
+                _key = value;
                 //RaisePropertyChanged("Date");
             }
         }

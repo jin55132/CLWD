@@ -89,6 +89,19 @@ namespace CLWD.ViewModel
                 }
             }
         }
+
+        public int Key
+        {
+            get { return Voca.Key; }
+            set
+            {
+                if (Voca.Key != value)
+                {
+                    Voca.Key = value;
+                    //RaisePropertyChanged("Date");
+                }
+            }
+        }
         #endregion
 
    

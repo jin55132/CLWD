@@ -81,23 +81,24 @@ namespace CLWD
             WorksheetFeed wsFeed = spreadsheet.Worksheets;
             WorksheetEntry worksheet = (WorksheetEntry)wsFeed.Entries[0];
 
+
+
+
+
+
             // Update the local representation of the worksheet.
-            if (!worksheet.Title.Text.Equals("My Word List") || !(worksheet.Cols == 3) || !(worksheet.Rows == 500))
+            if (!worksheet.Title.Text.Equals("My Word List") || !(worksheet.Cols == 4) || !(worksheet.Rows == 500))
             {
 
                 worksheet.Title.Text = "My Word List";
-                worksheet.Cols = 3;
+                worksheet.Cols = 4;
                 worksheet.Rows = 500;
-
-                // Send the local representation of the worksheet to the API for
-                // modification.
                 worksheet.Update();
-                // Fetch the cell feed of the worksheet.
+
                 CellQuery cellQuery = new CellQuery(worksheet.CellFeedLink);
                 cellQuery.ReturnEmpty = ReturnEmptyCells.yes;
                 cellQuery.MaximumRow = 1;
                 CellFeed cellFeed = spreadsheetService.Query(cellQuery);
-
 
                 foreach (CellEntry cell in cellFeed.Entries)
                 {
@@ -116,13 +117,22 @@ namespace CLWD
                         cell.InputValue = "definition";
                         cell.Update();
                     }
+                    else if (cell.Title.Text == "D1")
+                    {
+                        cell.InputValue = "key";
+                        cell.Update();
+                    }
                 }
-
-
             }
+
+
+            // Fetch the cell feed of the worksheet.
+
+
+
         }
 
-        public void Update(VocaViewModel vocaVM, long oldDate)
+        public void Update(VocaViewModel vocaVM, long oldDate, int oldKey)
         {
             WorksheetFeed wsFeed = spreadsheet.Worksheets;
             WorksheetEntry worksheet = (WorksheetEntry)wsFeed.Entries[0];
@@ -143,14 +153,14 @@ namespace CLWD
                     ListEntry.Custom dateColumn = row.Elements[0];
                     ListEntry.Custom wordColumn = row.Elements[1];
                     ListEntry.Custom definitionColumn = row.Elements[2];
-
-
-                    if (dateColumn.Value.Equals(oldDate.ToString()))
+                    ListEntry.Custom KeyColumn = row.Elements[3];
+                    if (dateColumn.Value.Equals(oldDate.ToString()) && KeyColumn.Value.Equals(oldKey.ToString()))
                     {
                         //update
-                        wordColumn.Value = vocaVM.Word; // this will fire propertychanged event.
+                        wordColumn.Value = vocaVM.Word; 
                         definitionColumn.Value = vocaVM.Definition;
                         dateColumn.Value = vocaVM.UnixTime.ToString();
+                        KeyColumn.Value = vocaVM.Key.ToString();
                         bDuplicated = true;
                         spreadsheetService.Update(row);
                         break;
@@ -169,7 +179,8 @@ namespace CLWD
                 row.Elements.Add(new ListEntry.Custom() { LocalName = "word", Value = vocaVM.Word });
                 row.Elements.Add(new ListEntry.Custom() { LocalName = "definition", Value = vocaVM.Definition });
                 row.Elements.Add(new ListEntry.Custom() { LocalName = "date", Value = vocaVM.UnixTime.ToString() });
-                
+                row.Elements.Add(new ListEntry.Custom() { LocalName = "key", Value = vocaVM.Key.ToString() });
+
                 // Send the new row to the API for insertion.
                 spreadsheetService.Insert(listFeed, row);
             }
@@ -186,7 +197,7 @@ namespace CLWD
             ListQuery listQuery = new ListQuery(listFeedLink.HRef.ToString());
             ListFeed listFeed = spreadsheetService.Query(listQuery);
 
-          
+
             foreach (ListEntry row in listFeed.Entries)
             {
                 try
@@ -194,10 +205,11 @@ namespace CLWD
                     ListEntry.Custom dateColumn = row.Elements[0];
                     ListEntry.Custom wordColumn = row.Elements[1];
                     ListEntry.Custom definitionColumn = row.Elements[2];
-                 
-                    string dateString = vocaVM.UnixTime.ToString();
+                    ListEntry.Custom KeyColumn = row.Elements[3];
 
-                    if (wordColumn.Value.Equals(vocaVM.Word) && dateColumn.Value.Equals(dateString))
+                    //if (wordColumn.Value.Equals(vocaVM.Word) && dateColumn.Value.Equals(dateString))
+                    //{
+                    if (dateColumn.Value.Equals(vocaVM.UnixTime.ToString()) && KeyColumn.Value.Equals(vocaVM.Key.ToString()))
                     {
                         row.Delete();
                     }
@@ -245,6 +257,10 @@ namespace CLWD
 
                             case "date":
                                 vocaVM.UnixTime = long.Parse(element.Value);
+                                break;
+
+                            case "key":
+                                vocaVM.Key = int.Parse(element.Value);
                                 break;
 
                         }

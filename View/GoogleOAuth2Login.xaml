@@ -4,10 +4,20 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:ns="clr-namespace:CLWD.DP"
       Height="640" Width="640"
-	Title="GoogleOAuth2Login" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow" Closed="Window_Closed">
+	Title="Sign in with Google" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" WindowStyle="SingleBorderWindow" Closed="Window_Closed">
 
     <Grid>
         <WebBrowser Name="webBrowser1" ns:AttachedProperties.BindableSource="{Binding AuthorizationURI}" LoadCompleted="webBrowser1_LoadCompleted"  ns:AttachedProperties.ShowInLogin="{Binding ShowButton}" />
-        <Button Content="Sign in Google" Height="59" HorizontalAlignment="Left" Margin="243,271,0,0" Name="button1" VerticalAlignment="Top" Width="149"  ns:AttachedProperties.ShowInLogin="{Binding ShowButton}" Command="{Binding Path=SigninCommand}"/>
+        <Button Content="Sign in with Google" Height="50" HorizontalAlignment="Left" Margin="225,307,0,0" Name="button1" VerticalAlignment="Top" Width="180"   Command="{Binding Path=SigninCommand}"/>
+        <Label  Height="131" HorizontalAlignment="Left" Margin="12,99,0,0" Name="label1" VerticalAlignment="Top" Width="594" >
+
+        </Label>
+        
+        <Image Height="72" HorizontalAlignment="Left" Margin="12,12,0,0" Name="image1" Stretch="UniformToFill" VerticalAlignment="Top" Width="211" Source="/CLWD;component/Image/logo3w.png" />
+        <Label Height="28" HorizontalAlignment="Left" Margin="467,573,0,0" Name="label2" VerticalAlignment="Top">
+  
+            <Hyperlink NavigateUri="mailto://">operator1732@gmail.com</Hyperlink>
+        </Label>
+        <Label Content="Developed by K.Jin " Height="28" HorizontalAlignment="Left" Margin="343,573,0,0" Name="label3" VerticalAlignment="Top" />
     </Grid>
 </Window>

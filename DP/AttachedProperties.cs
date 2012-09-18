@@ -64,21 +64,21 @@ namespace CLWD.DP
 
 
             }
-            else if (o is Button)
-            {
+            //else if (o is Button)
+            //{
 
-                Button obj = o as Button;
-                bool isShowUI = (bool)e.NewValue;
+            //    Button obj = o as Button;
+            //    bool isShowUI = (bool)e.NewValue;
 
-                if (isShowUI)
-                {
-                    obj.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    obj.Visibility = Visibility.Collapsed;
-                }
-            }
+            //    if (isShowUI)
+            //    {
+            //        obj.Visibility = Visibility.Visible;
+            //    }
+            //    else
+            //    {
+            //        obj.Visibility = Visibility.Collapsed;
+            //    }
+            //}
 
 
         }

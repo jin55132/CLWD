@@ -160,6 +160,15 @@ namespace CLWD.ViewModel
             }
 
         }
+        public int RandNumber(int Low, int High)
+        {
+            Random rndNum = new Random(int.Parse(Guid.NewGuid().ToString().Substring(0, 8), System.Globalization.NumberStyles.HexNumber));
+
+            int rnd = rndNum.Next(Low, High);
+
+            return rnd;
+        }
+
 
         public void EntityViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -174,6 +183,7 @@ namespace CLWD.ViewModel
 
                     //WordReference 통해 단어의미 획득..json
                     long oldDate = vocaVM.UnixTime;
+                    int oldKey = vocaVM.Key;
 
                     try
                     {
@@ -192,11 +202,9 @@ namespace CLWD.ViewModel
                             
                         }
 
-
+                        vocaVM.Key = RandNumber(1, 10000);
                         vocaVM.Definition = jsonProcessor(jstring);
                         vocaVM.Date = DateTime.Now;
-
-
 
                     }
                     catch
@@ -206,7 +214,7 @@ namespace CLWD.ViewModel
 
                     try
                     {
-                        _database.Update(vocaVM, oldDate);
+                        _database.Update(vocaVM, oldDate, oldKey);
                     }
                     catch
                     {
