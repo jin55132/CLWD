@@ -19,8 +19,8 @@ namespace CLWD
 
         private GoogleOAuth2Login googleOAuth2Window = null;
        // private GoogleOAuth2LoginViewModel googleOAuth2LoginViewModel = null;
-        private Book bookWindow = null;
-        private BookViewModel bookViewModel = null;
+        private Sheet sheetWindow = null;
+        private SpreadSheetViewModel spreadsheetViewModel = null;
         
         
 
@@ -29,11 +29,11 @@ namespace CLWD
             base.OnStartup(e);
 
             // ViewModels
-            bookViewModel = new BookViewModel();
+            spreadsheetViewModel = new SpreadSheetViewModel();
 
             // Windows
-            bookWindow = new Book();
-            bookWindow.DataContext = bookViewModel;
+            sheetWindow = new Sheet();
+            sheetWindow.DataContext = spreadsheetViewModel;
           
             
             #region close command handler
@@ -63,13 +63,13 @@ namespace CLWD
             #endregion
 
             // is it ok to be here..??
-            bookViewModel.GoogleOAuth2LoginViewModel.RequestClose += (s, eve) => googleOAuth2Window.Close();
-            bookViewModel.GoogleOAuth2LoginViewModel.RequestHide += (s, eve) => googleOAuth2Window.Hide();
-            bookViewModel.GoogleOAuth2LoginViewModel.RequestShow += (s, eve) => googleOAuth2Window.Show();
+            spreadsheetViewModel.GoogleOAuth2LoginViewModel.RequestClose += (s, eve) => googleOAuth2Window.Close();
+            spreadsheetViewModel.GoogleOAuth2LoginViewModel.RequestHide += (s, eve) => googleOAuth2Window.Hide();
+            spreadsheetViewModel.GoogleOAuth2LoginViewModel.RequestShow += (s, eve) => googleOAuth2Window.Show();
             // googleOAuth2LoginViewModel.RequestOpen += (s, eve) => googleOAuth2Window.Show();
 
-            bookWindow.Show();
-            bookViewModel.GoogleOAuth2LoginViewModel.initialize();
+            sheetWindow.Show();
+            spreadsheetViewModel.GoogleOAuth2LoginViewModel.initialize();
 
             
 

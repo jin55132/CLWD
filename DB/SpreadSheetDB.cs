@@ -7,6 +7,7 @@ using Google.GData.Spreadsheets;
 using Google.GData.Documents;
 using Google.GData.Client;
 using CLWD.ViewModel;
+using System.Collections.ObjectModel;
 
 namespace CLWD
 {
@@ -18,7 +19,7 @@ namespace CLWD
         Random _random = new Random();
         string[] _word = { "Metallica", "Elvis Presley", "Madonna", "The Beatles", "The Rolling Stones", "Abba" };
         string[] _meaning = { "Islands in the Stream", "Imagine", "Living on a Prayer", "Enter Sandman", "A Little Less Conversation", "Wonderful World" };
-        string doc_title = "CLWD Spreadsheet";
+        string doc_title = "The Google Words Spreadsheet";
 
         GOAuth2RequestFactory spreadsheetRequestFactory;
         GOAuth2RequestFactory docRequestFactory;
@@ -60,6 +61,9 @@ namespace CLWD
         }
         #endregion
 
+
+        
+
         public void Init()
         {
             spreadsheetfeed = spreadsheetService.Query(query);
@@ -78,6 +82,7 @@ namespace CLWD
 
             spreadsheetfeed = spreadsheetService.Query(query);
             spreadsheet = (SpreadsheetEntry)spreadsheetfeed.Entries[0];
+
             WorksheetFeed wsFeed = spreadsheet.Worksheets;
             WorksheetEntry worksheet = (WorksheetEntry)wsFeed.Entries[0];
 
@@ -222,12 +227,37 @@ namespace CLWD
             }
         }
 
-        public void Retrieve(BookViewModel bookVM)
+        public void RetrieveSpreadsheet(ObservableCollection<BookViewModel> sheet)
         {
-
             WorksheetFeed wsFeed = spreadsheet.Worksheets;
-            WorksheetEntry worksheet = (WorksheetEntry)wsFeed.Entries[0];
+            
+            AtomEntryCollection entries = wsFeed.Entries;
+           // WorksheetEntry worksheet = (WorksheetEntry)wsFeed.Entries[0];
 
+            foreach (WorksheetEntry worksheet in wsFeed.Entries)
+            {
+                BookViewModel bookVM = new BookViewModel(this, worksheet.Title.Text);
+                sheet.Add(bookVM);
+                RetrieveBook(worksheet, bookVM.Book);
+
+            }
+
+
+
+
+            //if (!worksheet.Title.Text.Equals("My Word List") || !(worksheet.Cols == 4) || !(worksheet.Rows == 500))
+            //{
+
+            //    worksheet.Title.Text = "My Word List";
+            //    worksheet.Cols = 4;
+            //    worksheet.Rows = 500;
+            //    worksheet.Update();
+            //}
+
+        }
+
+        public void RetrieveBook(WorksheetEntry worksheet, ObservableCollection<VocaViewModel> book)
+        {
 
             AtomLink listFeedLink = worksheet.Links.FindService(GDataSpreadsheetsNameTable.ListRel, null);
             ListQuery listQuery = new ListQuery(listFeedLink.HRef.ToString());
@@ -265,7 +295,7 @@ namespace CLWD
 
                         }
                     }
-                    bookVM.Insert(vocaVM);
+                    book.Add(vocaVM);
                 }
                 catch (System.Exception ex)
                 {

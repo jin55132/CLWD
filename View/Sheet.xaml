@@ -1,4 +1,4 @@
-﻿<Window x:Class="CLWD.Book"
+﻿<Window x:Class="CLWD.Sheet"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:CLWD.ViewModel"
@@ -12,17 +12,25 @@
                 <MenuItem Header="_Account">
                     <MenuItem Header="Sign _in with Google" Command="{Binding Path=LoginCommand}" />
                     <MenuItem Header="Sign _out" Command="{Binding Path=LogoutCommand}" />
-                    
                 </MenuItem>
+            
+			 <MenuItem Header="_Sheet">
+                    <MenuItem Header="Current" >
+                       
+					</MenuItem>
+                 
+                </MenuItem>
+
+                <ComboBox Width="120" ItemsSource="{Binding SpreadSheet}" IsSynchronizedWithCurrentItem="True"/>
             </Menu>
         </DockPanel>
 
-        <DataGrid Name="dataGrid1" ItemsSource="{Binding Path=Book}"   AutoGenerateColumns="False" Margin="0,0,0,0" IsEnabled="{Binding Path=Authorized}">
+        <DataGrid Name="dataGrid1" ItemsSource="{Binding Path=SpreadSheet/Book}"   AutoGenerateColumns="False" Margin="0,0,0,0" IsEnabled="{Binding Path=Authorized}" DockPanel.Dock="Bottom">
 
             <DataGrid.Columns>
                     <DataGridTextColumn Width="2*" Header="Word" Binding="{Binding Path=Word}" />
                 <DataGridTextColumn Width="4.5*" Header="Definition" Binding="{Binding Path=Definition}" />
-                    <DataGridTextColumn Width="2*" Header="Date" Binding="{Binding Path=Date}" IsReadOnly="True"/>
+                <DataGridTextColumn Width="2*" Header="Date" Binding="{Binding Path=Date}" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

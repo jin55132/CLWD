@@ -57,31 +57,31 @@ namespace CLWD.ViewModel
             }
         }
 
-        public string ID
-        {
-            get { return Account.ID; }
-            set
-            {
-                if (Account.ID != value)
-                {
-                    Account.ID = value;
-                    RaisePropertyChanged("ID");
-                }
-            }
-        }
+        //public string ID
+        //{
+        //    get { return Account.ID; }
+        //    set
+        //    {
+        //        if (Account.ID != value)
+        //        {
+        //            Account.ID = value;
+        //            RaisePropertyChanged("ID");
+        //        }
+        //    }
+        //}
 
-        public string Password
-        {
-            get { return Account.Password; }
-            set
-            {
-                if (Account.Password != value)
-                {
-                    Account.Password = value;
-                    RaisePropertyChanged("Password");
-                }
-            }
-        }
+        //public string Password
+        //{
+        //    get { return Account.Password; }
+        //    set
+        //    {
+        //        if (Account.Password != value)
+        //        {
+        //            Account.Password = value;
+        //            RaisePropertyChanged("Password");
+        //        }
+        //    }
+        //}
 
         public bool Authorized
         {
@@ -123,8 +123,8 @@ namespace CLWD.ViewModel
             CanLogin = false;
 
             SpreadsheetsService service = new SpreadsheetsService("MySpreadsheetIntegration-v1");
-            service.setUserCredentials(ID, Password);
-            string queryTitle = ID + "@CLWD";
+            service.setUserCredentials(Account.ID, Account.Password);
+            string queryTitle = Account.ID + "@CLWD";
 
             Google.GData.Spreadsheets.SpreadsheetQuery query = new Google.GData.Spreadsheets.SpreadsheetQuery();
             
@@ -163,8 +163,8 @@ namespace CLWD.ViewModel
                 }
                 catch
                 {
-                    ID = "";
-                    Password = "";
+                    Account.ID = "";
+                    Account.Password = "";
                     Authorized = false;
                     CanLogin = true;
                 }
@@ -198,10 +198,10 @@ namespace CLWD.ViewModel
             RegistryKey key = Registry.LocalMachine.OpenSubKey("Software", true).CreateSubKey("CLWD");
 
 
-            ID = (string)key.GetValue("ID", "");
-            Password = (string)key.GetValue("Password", "");
+            Account.ID = (string)key.GetValue("ID", "");
+            Account.Password = (string)key.GetValue("Password", "");
 
-            if (!ID.Equals("") && !Password.Equals(""))
+            if (!Account.ID.Equals("") && !Account.Password.Equals(""))
             {
                 SaveAccount = true;
             }
@@ -217,8 +217,8 @@ namespace CLWD.ViewModel
 
             if (SaveAccount == true)
             {
-                key.SetValue("ID", ID);
-                key.SetValue("Password", Password);
+                key.SetValue("ID", Account.ID);
+                key.SetValue("Password", Account.Password);
             }
             else
             {
