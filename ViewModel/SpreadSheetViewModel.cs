@@ -81,8 +81,7 @@ namespace CLWD.ViewModel
                     _database = new SpreadSheetDB(GoogleOAuth2LoginViewModel.OAuth2);
                     _database.Init();
                     _database.RetrieveSpreadsheet(SpreadSheet);
-
-
+                    
                 }
                 else
                 {
@@ -111,6 +110,32 @@ namespace CLWD.ViewModel
         }
         public ICommand LoginCommand { get { return new RelayCommand(LoginExecute, CanLoginCommandExecute); } }
         public ICommand LogoutCommand { get { return new RelayCommand(LoginExecute, CanLogoutCommandExecute); } }
+
+
+        void AddNewSheetExecute()
+        {
+
+
+        }
+
+        bool CanAddNewSheetExecute()
+        {
+            return true;
+        }
+        public ICommand AddNewSheetCommand { get { return new RelayCommand(AddNewSheetExecute, CanAddNewSheetExecute); } }
+
+
+        void DeleteCurrentSheetExecute()
+        {
+
+        }
+
+
+        bool CanDeleteCurrentSheetExecute()
+        {
+            return true;
+        }
+        public ICommand DeleteCurrentSheetCommand { get { return new RelayCommand(DeleteCurrentSheetExecute, CanDeleteCurrentSheetExecute); } }
 
 
 

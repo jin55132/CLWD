@@ -137,13 +137,10 @@ namespace CLWD
 
         }
 
-        public void Update(VocaViewModel vocaVM, long oldDate, int oldKey)
+        public void Update(BookViewModel bookVM, VocaViewModel vocaVM, long oldDate, int oldKey)
         {
-            WorksheetFeed wsFeed = spreadsheet.Worksheets;
-            WorksheetEntry worksheet = (WorksheetEntry)wsFeed.Entries[0];
 
-
-            AtomLink listFeedLink = worksheet.Links.FindService(GDataSpreadsheetsNameTable.ListRel, null);
+            AtomLink listFeedLink = bookVM.Entry.Links.FindService(GDataSpreadsheetsNameTable.ListRel, null);
             ListQuery listQuery = new ListQuery(listFeedLink.HRef.ToString());
             ListFeed listFeed = spreadsheetService.Query(listQuery);
 
@@ -192,13 +189,11 @@ namespace CLWD
 
         }
 
-        public void Remove(VocaViewModel vocaVM)
+        public void Remove(BookViewModel bookVM, VocaViewModel vocaVM)
         {
-            WorksheetFeed wsFeed = spreadsheet.Worksheets;
-            WorksheetEntry worksheet = (WorksheetEntry)wsFeed.Entries[0];
 
 
-            AtomLink listFeedLink = worksheet.Links.FindService(GDataSpreadsheetsNameTable.ListRel, null);
+            AtomLink listFeedLink = bookVM.Entry.Links.FindService(GDataSpreadsheetsNameTable.ListRel, null);
             ListQuery listQuery = new ListQuery(listFeedLink.HRef.ToString());
             ListFeed listFeed = spreadsheetService.Query(listQuery);
 
@@ -231,40 +226,26 @@ namespace CLWD
         {
             WorksheetFeed wsFeed = spreadsheet.Worksheets;
             
-            AtomEntryCollection entries = wsFeed.Entries;
-           // WorksheetEntry worksheet = (WorksheetEntry)wsFeed.Entries[0];
-
-            foreach (WorksheetEntry worksheet in wsFeed.Entries)
+           AtomEntryCollection entries = wsFeed.Entries;
+         
+           foreach (WorksheetEntry worksheet in entries)
             {
-                BookViewModel bookVM = new BookViewModel(this, worksheet.Title.Text);
+                BookViewModel bookVM = new BookViewModel(this, worksheet.Title.Text, worksheet);
                 sheet.Add(bookVM);
-                RetrieveBook(worksheet, bookVM.Book);
+                RetrieveBook(bookVM);
 
             }
 
-
-
-
-            //if (!worksheet.Title.Text.Equals("My Word List") || !(worksheet.Cols == 4) || !(worksheet.Rows == 500))
-            //{
-
-            //    worksheet.Title.Text = "My Word List";
-            //    worksheet.Cols = 4;
-            //    worksheet.Rows = 500;
-            //    worksheet.Update();
-            //}
-
         }
 
-        public void RetrieveBook(WorksheetEntry worksheet, ObservableCollection<VocaViewModel> book)
+        public void RetrieveBook(BookViewModel bookVM)
         {
 
-            AtomLink listFeedLink = worksheet.Links.FindService(GDataSpreadsheetsNameTable.ListRel, null);
+            AtomLink listFeedLink = bookVM.Entry.Links.FindService(GDataSpreadsheetsNameTable.ListRel, null);
             ListQuery listQuery = new ListQuery(listFeedLink.HRef.ToString());
             ListFeed listFeed = spreadsheetService.Query(listQuery);
 
 
-            // Iterate through each row, printing its cell values.
             foreach (ListEntry row in listFeed.Entries)
             {
 
@@ -295,7 +276,7 @@ namespace CLWD
 
                         }
                     }
-                    book.Add(vocaVM);
+                    bookVM.Book.Add(vocaVM);
                 }
                 catch (System.Exception ex)
                 {
