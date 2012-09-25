@@ -227,7 +227,7 @@ namespace CLWD
             }
         }
 
-        public void RetrieveSpreadsheet(ObservableCollection<BookViewModel> sheet)
+        public void RetrieveSpreadsheet(SpreadSheetViewModel spreadsheetVM)
         {
             WorksheetFeed wsFeed = spreadsheet.Worksheets;
             
@@ -237,7 +237,8 @@ namespace CLWD
             foreach (WorksheetEntry worksheet in wsFeed.Entries)
             {
                 BookViewModel bookVM = new BookViewModel(this, worksheet.Title.Text);
-                sheet.Add(bookVM);
+                bookVM.Book.CollectionChanged += bookVM.VocaViewModel_PropertyChanged;
+                spreadsheetVM.SpreadSheet.Add(bookVM);
                 RetrieveBook(worksheet, bookVM.Book);
 
             }

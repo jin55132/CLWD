@@ -71,7 +71,7 @@ namespace CLWD.ViewModel
             PropertyChanged += SpreadSheetViewModel_PropertyChanged;
         }
 
-        void SpreadSheetViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+         void SpreadSheetViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
 
             if (e.PropertyName == "Authorized")
@@ -80,7 +80,7 @@ namespace CLWD.ViewModel
                 {
                     _database = new SpreadSheetDB(GoogleOAuth2LoginViewModel.OAuth2);
                     _database.Init();
-                    _database.RetrieveSpreadsheet(SpreadSheet);
+                    _database.RetrieveSpreadsheet(this);
 
 
                 }

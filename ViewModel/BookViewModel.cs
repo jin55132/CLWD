@@ -120,7 +120,7 @@ namespace CLWD.ViewModel
         //}
 
 
-        void VocaViewModel_PropertyChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public void VocaViewModel_PropertyChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
