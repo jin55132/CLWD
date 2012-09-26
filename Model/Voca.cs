@@ -12,6 +12,7 @@ namespace CLWD.Model
         string _definition;
         DateTime _date;
         int _key;
+        bool _checked;
         #endregion
 
 
@@ -26,6 +27,11 @@ namespace CLWD.Model
             }
         }
 
+        public bool Checked
+        {
+            get { return _checked; }
+            set { _checked = value; }
+        }
         public string Definition
         {
             get { return _definition; }

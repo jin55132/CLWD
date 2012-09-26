@@ -180,6 +180,34 @@ namespace CLWD.ViewModel
 
             }
 
+            else if (e.PropertyName.Equals("Checked"))
+            {
+                VocaViewModel vocaVM = ((VocaViewModel)sender);
+
+
+                ThreadStart start = delegate()
+                {
+
+                    //WordReference 통해 단어의미 획득..json
+                    long oldDate = vocaVM.UnixTime;
+                    int oldKey = vocaVM.Key;
+
+                    try
+                    {
+
+                        _database.UpdateVoca(this, vocaVM, oldDate, oldKey);
+
+                    }
+                    catch
+                    {
+
+                    }
+
+                };
+
+                new Thread(start).Start();
+            }
+
 
         }
 

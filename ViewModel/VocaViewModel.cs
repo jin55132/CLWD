@@ -51,6 +51,19 @@ namespace CLWD.ViewModel
             }
         }
 
+        public bool Checked
+        {
+            get { return Voca.Checked; }
+            set
+            {
+                if (Voca.Checked != value)
+                {
+                    Voca.Checked = value;
+                    RaisePropertyChanged("Checked");
+                }
+            }
+        }
+
         public string Definition
         {
             get { return Voca.Definition; }

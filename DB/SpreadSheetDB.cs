@@ -104,7 +104,7 @@ namespace CLWD
 
       
                 worksheet.Title.Text = title;
-                worksheet.Cols = 4;
+                worksheet.Cols = 5;
                 worksheet.Rows = 500;
                 worksheet.Update();
 
@@ -136,13 +136,17 @@ namespace CLWD
                         cell.InputValue = "key";
                         cell.Update();
                     }
+                    else if (cell.Title.Text == "E1")
+                    {
+                        cell.InputValue = "checked";
+                        cell.Update();
+                    }
                 }
       
         }
 
 
         public void UpdateVoca(BookViewModel bookVM, VocaViewModel vocaVM, long oldDate, int oldKey)
-
         {
 
             AtomLink listFeedLink = bookVM.Entry.Links.FindService(GDataSpreadsheetsNameTable.ListRel, null);
@@ -161,6 +165,7 @@ namespace CLWD
                     ListEntry.Custom wordColumn = row.Elements[1];
                     ListEntry.Custom definitionColumn = row.Elements[2];
                     ListEntry.Custom KeyColumn = row.Elements[3];
+                    ListEntry.Custom checkedColumn = row.Elements[4];
                     if (dateColumn.Value.Equals(oldDate.ToString()) && KeyColumn.Value.Equals(oldKey.ToString()))
                     {
                         //update
@@ -168,6 +173,7 @@ namespace CLWD
                         definitionColumn.Value = vocaVM.Definition;
                         dateColumn.Value = vocaVM.UnixTime.ToString();
                         KeyColumn.Value = vocaVM.Key.ToString();
+                        checkedColumn.Value = vocaVM.Checked.ToString();
                         bDuplicated = true;
                         spreadsheetService.Update(row);
                         break;
@@ -187,6 +193,7 @@ namespace CLWD
                 row.Elements.Add(new ListEntry.Custom() { LocalName = "definition", Value = vocaVM.Definition });
                 row.Elements.Add(new ListEntry.Custom() { LocalName = "date", Value = vocaVM.UnixTime.ToString() });
                 row.Elements.Add(new ListEntry.Custom() { LocalName = "key", Value = vocaVM.Key.ToString() });
+                row.Elements.Add(new ListEntry.Custom() { LocalName = "checked", Value = vocaVM.Checked.ToString() });
 
                 // Send the new row to the API for insertion.
                 spreadsheetService.Insert(listFeed, row);
@@ -213,6 +220,7 @@ namespace CLWD
                     ListEntry.Custom wordColumn = row.Elements[1];
                     ListEntry.Custom definitionColumn = row.Elements[2];
                     ListEntry.Custom KeyColumn = row.Elements[3];
+                    ListEntry.Custom checkedColumn = row.Elements[4];
 
                     //if (wordColumn.Value.Equals(vocaVM.Word) && dateColumn.Value.Equals(dateString))
                     //{
@@ -258,7 +266,7 @@ namespace CLWD
             WorksheetEntry worksheet = new WorksheetEntry();
             WorksheetFeed wsFeed = spreadsheet.Worksheets;
             string title = genTitle(wsFeed.Entries.Count + 1);
-            worksheet.Cols = 4;
+            worksheet.Cols = 5;
             worksheet.Rows = 500;
             worksheet.Title.Text = title;
             spreadsheetService.Insert(wsFeed, worksheet);
@@ -338,6 +346,10 @@ namespace CLWD
                                 vocaVM.Key = int.Parse(element.Value);
                                 break;
 
+                            case "checked":
+                                vocaVM.Checked = bool.Parse(element.Value);
+                                break;
+
                         }
                     }
                     bookVM.Book.Add(vocaVM);
@@ -349,8 +361,11 @@ namespace CLWD
 
             }
             ICollectionView vs = CollectionViewSource.GetDefaultView(bookVM.Book);
-            vs.MoveCurrentToLast();
+            
 
+            vs.SortDescriptions.Add(new SortDescription("Checked", ListSortDirection.Descending));
+            vs.SortDescriptions.Add(new SortDescription("Date", ListSortDirection.Ascending));
+            vs.MoveCurrentToLast();
 
 
         }

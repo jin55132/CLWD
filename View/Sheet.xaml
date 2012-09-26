@@ -27,8 +27,8 @@
         <DataGrid IsSynchronizedWithCurrentItem="True" Name="dataGrid1" ItemsSource="{Binding Path=SpreadSheet/Book}"   AutoGenerateColumns="False" Margin="0,0,0,0" IsEnabled="{Binding Path=Authorized}" DockPanel.Dock="Bottom" SelectionChanged="dataGrid1_SelectionChanged">
 
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Width="25" Binding="{Binding Path=checked}"/>
-                <DataGridTextColumn Width="2*" Header="Word" Binding="{Binding Path=Word}" />
+                <DataGridCheckBoxColumn Width="25" Binding="{Binding Path=Checked, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Width="2*" Header="Word" Binding="{Binding Path=Word}"></DataGridTextColumn>
                 <DataGridTemplateColumn  Width="4.5*" Header="Definition" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
