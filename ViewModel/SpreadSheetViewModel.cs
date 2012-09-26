@@ -71,29 +71,32 @@ namespace CLWD.ViewModel
             };
 
             PropertyChanged += SpreadSheetViewModel_PropertyChanged;
-            SpreadSheet.CollectionChanged += SpreadSheetCollectionChanged;
+            //SpreadSheet.CollectionChanged += SpreadSheetCollectionChanged;
         }
 
 
-        public void SpreadSheetCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (BookViewModel item in e.NewItems)
-                {
-                    //CollectionViewSource.GetDefaultView(SpreadSheet).MoveCurrentToNext();
+        //public void SpreadSheetCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        //{
+        //    if (e.Action == NotifyCollectionChangedAction.Add)
+        //    {
 
-                }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (BookViewModel item in e.OldItems)
-                {
+
+        //        foreach (BookViewModel item in e.NewItems)
+        //        {
+
+
+
+        //        }
+        //    }
+        //    else if (e.Action == NotifyCollectionChangedAction.Remove)
+        //    {
+        //        foreach (BookViewModel item in e.OldItems)
+        //        {
                    
-                }
-            }
+        //        }
+        //    }
 
-        }
+        //}
 
          void SpreadSheetViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -120,7 +123,7 @@ namespace CLWD.ViewModel
 
         void LoginExecute()
         {
-            //Book.Clear();
+            SpreadSheet.Clear();
             GoogleOAuth2LoginViewModel.uninitialize();
             GoogleOAuth2LoginViewModel.initialize();
         }
@@ -142,7 +145,8 @@ namespace CLWD.ViewModel
         void AddNewSheetExecute()
         {
 
-            _database.AddBook(this, DateTime.Now.ToString());
+            _database.AddBook(this);
+
 
 
         }
@@ -157,7 +161,10 @@ namespace CLWD.ViewModel
         void DeleteCurrentSheetExecute()
         {
 
-            BookViewModel current = CollectionViewSource.GetDefaultView(SpreadSheet).CurrentItem as BookViewModel;
+            ICollectionView vs = CollectionViewSource.GetDefaultView(SpreadSheet);
+            
+
+            BookViewModel current = vs.CurrentItem as BookViewModel;
             
             if(current != null)
                 _database.DeleteBook(this, current);

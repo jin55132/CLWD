@@ -8,6 +8,9 @@ using Google.GData.Documents;
 using Google.GData.Client;
 using CLWD.ViewModel;
 using System.Collections.ObjectModel;
+using System.Windows.Data;
+using System.ComponentModel;
+using System.Diagnostics;
 
 namespace CLWD
 {
@@ -62,7 +65,10 @@ namespace CLWD
         #endregion
 
 
-        
+        private string genTitle(int index)
+        {
+            return string.Format("Book {0}", index);
+        }
 
         public void Init()
         {
@@ -84,36 +90,25 @@ namespace CLWD
             spreadsheet = (SpreadsheetEntry)spreadsheetfeed.Entries[0];
 
             WorksheetFeed wsFeed = spreadsheet.Worksheets;
+            
             WorksheetEntry worksheet = (WorksheetEntry)wsFeed.Entries[0];
+                        
+            
+            InitWorksheet(worksheet, genTitle(1));
 
 
+        }
 
+        public void InitWorksheet(WorksheetEntry worksheet, string title)
+        {
 
-
-
-            // Update the local representation of the worksheet.
-            if (!worksheet.Title.Text.Equals("My Word List") || !(worksheet.Cols == 4) || !(worksheet.Rows == 500))
-            {
-
-                worksheet.Title.Text = "My Word List";
+      
+                worksheet.Title.Text = title;
                 worksheet.Cols = 4;
                 worksheet.Rows = 500;
                 worksheet.Update();
 
 
-                InitWorksheet(worksheet);
-            }
-
-
-            // Fetch the cell feed of the worksheet.
-
-
-
-        }
-
-        public void InitWorksheet(WorksheetEntry worksheet)
-        {
-            
                 CellQuery cellQuery = new CellQuery(worksheet.CellFeedLink);
                 cellQuery.ReturnEmpty = ReturnEmptyCells.yes;
                 cellQuery.MaximumRow = 1;
@@ -142,6 +137,7 @@ namespace CLWD
                         cell.Update();
                     }
                 }
+      
         }
 
 
@@ -239,43 +235,48 @@ namespace CLWD
            WorksheetFeed wsFeed = spreadsheet.Worksheets;
 
            AtomEntryCollection entries = wsFeed.Entries;
-         
+
            foreach (WorksheetEntry worksheet in entries)
-            {
+           {
 
-                BookViewModel bookVM = new BookViewModel(this, worksheet.Title.Text, worksheet);
-                bookVM.Book.CollectionChanged += bookVM.VocaViewModel_PropertyChanged;
-                spreadsheetVM.SpreadSheet.Add(bookVM);
+               BookViewModel bookVM = new BookViewModel(this, worksheet.Title.Text, worksheet);
+               bookVM.Book.CollectionChanged += bookVM.VocaViewModel_PropertyChanged;
+               RetrieveBook(bookVM);
+               spreadsheetVM.SpreadSheet.Add(bookVM);
 
-                RetrieveBook(bookVM);
+           }
 
-            }
+
+           ICollectionView vs = CollectionViewSource.GetDefaultView(spreadsheetVM.SpreadSheet);
+           vs.MoveCurrentToLast();
 
 
         }
 
-        public void AddBook(SpreadSheetViewModel spreadsheetVM, string title)
+        public void AddBook(SpreadSheetViewModel spreadsheetVM)
         {
             WorksheetEntry worksheet = new WorksheetEntry();
-            worksheet.Title.Text = title;
+            WorksheetFeed wsFeed = spreadsheet.Worksheets;
+            string title = genTitle(wsFeed.Entries.Count + 1);
             worksheet.Cols = 4;
             worksheet.Rows = 500;
-
-
-            WorksheetFeed wsFeed = spreadsheet.Worksheets;
+            worksheet.Title.Text = title;
             spreadsheetService.Insert(wsFeed, worksheet);
 
-
+           
             wsFeed = spreadsheet.Worksheets;
             worksheet = (WorksheetEntry)wsFeed.Entries[wsFeed.Entries.Count - 1];
 
-            InitWorksheet(worksheet);
+            InitWorksheet(worksheet, title);
 
 
             BookViewModel bookVM = new BookViewModel(this, title, worksheet);
             bookVM.Book.CollectionChanged += bookVM.VocaViewModel_PropertyChanged;
             spreadsheetVM.SpreadSheet.Add(bookVM);
 
+
+            ICollectionView vs = CollectionViewSource.GetDefaultView(spreadsheetVM.SpreadSheet);
+            vs.MoveCurrentTo(bookVM);
 
         }
 
@@ -346,9 +347,9 @@ namespace CLWD
 
                 }
 
-
-
             }
+            ICollectionView vs = CollectionViewSource.GetDefaultView(bookVM.Book);
+            vs.MoveCurrentToLast();
 
 
 

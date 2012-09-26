@@ -33,8 +33,8 @@ namespace CLWD
 
             // Windows
             sheetWindow = new Sheet();
+
             sheetWindow.DataContext = spreadsheetViewModel;
-          
             
             #region close command handler
             //EventHandler handler = null;

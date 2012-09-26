@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using CLWD.ViewModel;
+using System.Windows.Controls.Primitives;
 
 namespace CLWD
 {
@@ -33,6 +34,17 @@ namespace CLWD
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             ((SpreadSheetViewModel)this.DataContext).Closing();
+        }
+
+        private void dataGrid1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Selector selector = sender as Selector;
+            if (selector is DataGrid)
+            {
+                if(selector.SelectedItem != null)
+                    (selector as DataGrid).ScrollIntoView(selector.SelectedItem);
+            } 
+
         }
     }
 }
