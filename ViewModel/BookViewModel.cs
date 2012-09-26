@@ -68,8 +68,10 @@ namespace CLWD.ViewModel
         #endregion
 
 
+
       
         public void VocaViewModel_PropertyChanged(object sender, NotifyCollectionChangedEventArgs e)
+
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
@@ -83,7 +85,9 @@ namespace CLWD.ViewModel
 
                         try
                         {
+
                             _database.RemoveVoca(this, item);
+
                         }
                         catch
                         {
@@ -161,7 +165,9 @@ namespace CLWD.ViewModel
 
                     try
                     {
+
                         _database.UpdateVoca( this, vocaVM, oldDate, oldKey);
+
                     }
                     catch
                     {

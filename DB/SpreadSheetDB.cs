@@ -144,7 +144,9 @@ namespace CLWD
                 }
         }
 
+
         public void UpdateVoca(BookViewModel bookVM, VocaViewModel vocaVM, long oldDate, int oldKey)
+
         {
 
             AtomLink listFeedLink = bookVM.Entry.Links.FindService(GDataSpreadsheetsNameTable.ListRel, null);
@@ -196,7 +198,9 @@ namespace CLWD
 
         }
 
+
         public void RemoveVoca(BookViewModel bookVM, VocaViewModel vocaVM)
+
         {
 
 
@@ -231,7 +235,9 @@ namespace CLWD
 
         public void RetrieveSpreadsheet(SpreadSheetViewModel spreadsheetVM)
         {
+
            WorksheetFeed wsFeed = spreadsheet.Worksheets;
+
            AtomEntryCollection entries = wsFeed.Entries;
          
            foreach (WorksheetEntry worksheet in entries)
@@ -240,9 +246,11 @@ namespace CLWD
                 BookViewModel bookVM = new BookViewModel(this, worksheet.Title.Text, worksheet);
                 bookVM.Book.CollectionChanged += bookVM.VocaViewModel_PropertyChanged;
                 spreadsheetVM.SpreadSheet.Add(bookVM);
+
                 RetrieveBook(bookVM);
 
             }
+
 
         }
 
@@ -273,8 +281,10 @@ namespace CLWD
 
 
         public void DeleteBook(SpreadSheetViewModel spreadsheetVM, BookViewModel bookVM)
+
         {
              WorksheetFeed wsFeed = spreadsheet.Worksheets;
+
 
             foreach (WorksheetEntry worksheet in wsFeed.Entries)
             {
@@ -292,6 +302,7 @@ namespace CLWD
 
         public void RetrieveBook(BookViewModel bookVM)
         {
+
 
             AtomLink listFeedLink = bookVM.Entry.Links.FindService(GDataSpreadsheetsNameTable.ListRel, null);
             ListQuery listQuery = new ListQuery(listFeedLink.HRef.ToString());

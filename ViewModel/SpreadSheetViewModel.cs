@@ -104,7 +104,9 @@ namespace CLWD.ViewModel
                 {
                     _database = new SpreadSheetDB(GoogleOAuth2LoginViewModel.OAuth2);
                     _database.Init();
+
                     _database.RetrieveSpreadsheet(this);
+
 
 
                 }
@@ -139,7 +141,9 @@ namespace CLWD.ViewModel
 
         void AddNewSheetExecute()
         {
+
             _database.AddBook(this, DateTime.Now.ToString());
+
 
         }
 
@@ -152,10 +156,12 @@ namespace CLWD.ViewModel
 
         void DeleteCurrentSheetExecute()
         {
+
             BookViewModel current = CollectionViewSource.GetDefaultView(SpreadSheet).CurrentItem as BookViewModel;
             
             if(current != null)
                 _database.DeleteBook(this, current);
+
         }
 
 
