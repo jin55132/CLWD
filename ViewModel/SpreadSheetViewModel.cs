@@ -5,6 +5,8 @@ using System.Text;
 using System.Windows.Input;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Windows.Data;
 
 namespace CLWD.ViewModel
 {
@@ -69,9 +71,31 @@ namespace CLWD.ViewModel
             };
 
             PropertyChanged += SpreadSheetViewModel_PropertyChanged;
+            SpreadSheet.CollectionChanged += SpreadSheetCollectionChanged;
         }
 
-        void SpreadSheetViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+
+        public void SpreadSheetCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (BookViewModel item in e.NewItems)
+                {
+                    //CollectionViewSource.GetDefaultView(SpreadSheet).MoveCurrentToNext();
+
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (BookViewModel item in e.OldItems)
+                {
+                   
+                }
+            }
+
+        }
+
+         void SpreadSheetViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
 
             if (e.PropertyName == "Authorized")
@@ -80,8 +104,11 @@ namespace CLWD.ViewModel
                 {
                     _database = new SpreadSheetDB(GoogleOAuth2LoginViewModel.OAuth2);
                     _database.Init();
-                    _database.RetrieveSpreadsheet(SpreadSheet);
-                    
+
+                    _database.RetrieveSpreadsheet(this);
+
+
+
                 }
                 else
                 {
@@ -115,6 +142,8 @@ namespace CLWD.ViewModel
         void AddNewSheetExecute()
         {
 
+            _database.AddBook(this, DateTime.Now.ToString());
+
 
         }
 
@@ -127,6 +156,11 @@ namespace CLWD.ViewModel
 
         void DeleteCurrentSheetExecute()
         {
+
+            BookViewModel current = CollectionViewSource.GetDefaultView(SpreadSheet).CurrentItem as BookViewModel;
+            
+            if(current != null)
+                _database.DeleteBook(this, current);
 
         }
 

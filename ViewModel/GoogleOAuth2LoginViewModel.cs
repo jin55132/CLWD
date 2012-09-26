@@ -139,6 +139,7 @@ namespace CLWD.ViewModel
                 {
                     OAuth2.Parameters.AccessCode = AccessCode;
                     OAuthUtil.GetAccessToken(OAuth2.Parameters);
+                   
                     SaveToRegistry();
                     //AccessToken = OAuth2.Parameters.AccessToken;
                     Authorized = true;
