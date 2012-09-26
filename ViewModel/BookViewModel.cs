@@ -15,6 +15,8 @@ using System.Threading;
 using System.Windows.Threading;
 using System.Windows;
 using CLWD.Helpher;
+using Google.GData.Client;
+using Google.GData.Spreadsheets;
 
 namespace CLWD.ViewModel
 {
@@ -24,12 +26,15 @@ namespace CLWD.ViewModel
         private SpreadSheetDB _database;
        // private GoogleOAuth2LoginViewModel _loginViewModel;
         private ObservableCollection<VocaViewModel> _book = new ObservableCollection<VocaViewModel>();
-       
+        
         #endregion
 
 
 
         #region Properties
+
+        public WorksheetEntry Entry { get; set; }
+         
 
         public string BookTitle { get; set; }
 
@@ -45,81 +50,25 @@ namespace CLWD.ViewModel
 
             }
         }
-        //public bool Authorized
-        //{
-        //    get
-        //    {
-        //        return _loginViewModel.Authorized;
-        //    }
-        //    set
-        //    {
-        //        _loginViewModel.Authorized = value;
 
-        //    }
-        //}
-
-
-        //public GoogleOAuth2LoginViewModel GoogleOAuth2LoginViewModel
-        //{
-        //    get
-        //    {
-        //        return _loginViewModel;
-
-        //    }
-        //    set
-        //    {
-        //        if (_loginViewModel != value)
-        //            _loginViewModel = value;
-        //    }
-        //}
         #endregion
 
 
 
         #region Construction
-        //  나중에 추상화 해야함.. OAuth2 login
-        public BookViewModel(SpreadSheetDB db, string title)
+
+        public BookViewModel(SpreadSheetDB db, string title, WorksheetEntry entry)
         {
             BookTitle = title;
             _database = db;
-           // _spreadsheet.CollectionChanged += SpreadsheetViewModel_PropertyChanged;
-            //PropertyChanged += BookViewModel_PropertyChanged;
+            Entry = entry;
+          
         }
 
         #endregion
 
-        //ObservableCollection<VocaViewModel> CreateBookViewModel()
-        //{
-        //    ObservableCollection<VocaViewModel> _book = new ObservableCollection<VocaViewModel>();
-        //    _book.CollectionChanged += VocaViewModel_PropertyChanged;
-        //    return _book;
-        //}
 
-
-        //void InsertBook
-
-        //void BookViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        //{
-
-        //    if (e.PropertyName == "Authorized")
-        //    {
-        //        if (Authorized)
-        //        {
-        //            _database = new SpreadSheetDB(GoogleOAuth2LoginViewModel.OAuth2);
-        //            _database.Init();
-        //            //_database.RetrieveBook(_book);
-
-
-        //        }
-        //        else
-        //        {
-
-        //        }
-        //    }
-
-        //}
-
-
+      
         public void VocaViewModel_PropertyChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
@@ -134,7 +83,7 @@ namespace CLWD.ViewModel
 
                         try
                         {
-                            _database.Remove(item);
+                            _database.RemoveVoca(this, item);
                         }
                         catch
                         {
@@ -212,7 +161,7 @@ namespace CLWD.ViewModel
 
                     try
                     {
-                        _database.Update(vocaVM, oldDate, oldKey);
+                        _database.UpdateVoca( this, vocaVM, oldDate, oldKey);
                     }
                     catch
                     {
@@ -282,80 +231,5 @@ namespace CLWD.ViewModel
             return uri + version + key + method + dictionary + word;
         }
 
-        //public void LoginViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        //{
-        //    //if (e.PropertyName == "Authorized")
-        //    {
-        //        RaisePropertyChanged(e.PropertyName);
-        //    }
-        //}
-
-
-        #region Commands
-
-        //void LoginExecute()
-        //{
-        //    //Book.Clear();
-        //    GoogleOAuth2LoginViewModel.uninitialize();
-        //    GoogleOAuth2LoginViewModel.initialize();
-        //}
-
-
-        //bool CanLoginCommandExecute()
-        //{
-        //    return !Authorized && !GoogleOAuth2LoginViewModel.WindowAlive; ;
-        //}
-
-        //bool CanLogoutCommandExecute()
-        //{
-        //    return Authorized && !GoogleOAuth2LoginViewModel.WindowAlive;
-        //}
-        //public ICommand LoginCommand { get { return new RelayCommand(LoginExecute, CanLoginCommandExecute); } }
-        //public ICommand LogoutCommand { get { return new RelayCommand(LoginExecute, CanLogoutCommandExecute); } }
-
-
-
-
-        //public void Closing()
-        //{
-        //    if (GoogleOAuth2LoginViewModel.WindowAlive)
-        //        GoogleOAuth2LoginViewModel.OnRequestClose();
-        //}
-        //void AddAlbumArtistExecute()
-        //{
-        //    //    if (_songs == null)
-        //    //        return;
-
-        //    //    _songs.Add(new SongViewModel { Song = new Song { ArtistName = _database.GetRandomArtistName, SongTitle = _database.GetRandomSongTitle } });
-        //    //
-        //}
-
-        //bool CanAddAlbumArtistExecute()
-        //{
-        //    return true;
-        //}
-
-        //public ICommand AddAlbumArtist { get { return new RelayCommand(AddAlbumArtistExecute, CanAddAlbumArtistExecute); } }
-
-        //void UpdateSongTitlesExecute()
-        //{
-        //    //if (_songs == null)
-        //    //    return;
-
-        //    //++_count;
-        //    //foreach (var song in _songs)
-        //    //{
-        //    //    song.SongTitle = _database.GetRandomSongTitle;
-        //    //}
-        //}
-
-        //bool CanUpdateSongTitlesExecute()
-        //{
-        //    return true;
-        //}
-
-        //public ICommand UpdateSongTitles { get { return new RelayCommand(UpdateSongTitlesExecute, CanUpdateSongTitlesExecute); } }
-
-        #endregion
     }
 }

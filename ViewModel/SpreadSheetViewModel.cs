@@ -5,6 +5,8 @@ using System.Text;
 using System.Windows.Input;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Windows.Data;
 
 namespace CLWD.ViewModel
 {
@@ -69,6 +71,28 @@ namespace CLWD.ViewModel
             };
 
             PropertyChanged += SpreadSheetViewModel_PropertyChanged;
+            SpreadSheet.CollectionChanged += SpreadSheetCollectionChanged;
+        }
+
+
+        public void SpreadSheetCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (BookViewModel item in e.NewItems)
+                {
+                    //CollectionViewSource.GetDefaultView(SpreadSheet).MoveCurrentToNext();
+
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (BookViewModel item in e.OldItems)
+                {
+                   
+                }
+            }
+
         }
 
          void SpreadSheetViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -111,6 +135,35 @@ namespace CLWD.ViewModel
         }
         public ICommand LoginCommand { get { return new RelayCommand(LoginExecute, CanLoginCommandExecute); } }
         public ICommand LogoutCommand { get { return new RelayCommand(LoginExecute, CanLogoutCommandExecute); } }
+
+
+        void AddNewSheetExecute()
+        {
+            _database.AddBook(this, DateTime.Now.ToString());
+
+        }
+
+        bool CanAddNewSheetExecute()
+        {
+            return true;
+        }
+        public ICommand AddNewSheetCommand { get { return new RelayCommand(AddNewSheetExecute, CanAddNewSheetExecute); } }
+
+
+        void DeleteCurrentSheetExecute()
+        {
+            BookViewModel current = CollectionViewSource.GetDefaultView(SpreadSheet).CurrentItem as BookViewModel;
+            
+            if(current != null)
+                _database.DeleteBook(this, current);
+        }
+
+
+        bool CanDeleteCurrentSheetExecute()
+        {
+            return true;
+        }
+        public ICommand DeleteCurrentSheetCommand { get { return new RelayCommand(DeleteCurrentSheetExecute, CanDeleteCurrentSheetExecute); } }
 
 
 

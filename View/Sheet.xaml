@@ -15,13 +15,12 @@
                 </MenuItem>
             
 			 <MenuItem Header="_Sheet">
-                    <MenuItem Header="Current" >
-                       
-					</MenuItem>
-                 
+                    <MenuItem Header="Add _new sheet" Command="{Binding Path=AddNewSheetCommand}"/>
+                    <MenuItem Header="Delete current sheet" Command="{Binding Path=DeleteCurrentSheetCommand}"/>
+
                 </MenuItem>
 
-                <ComboBox Width="120" ItemsSource="{Binding SpreadSheet}" IsSynchronizedWithCurrentItem="True"/>
+                <ComboBox Width="200" ItemsSource="{Binding SpreadSheet}" IsSynchronizedWithCurrentItem="True" DisplayMemberPath="BookTitle"/>
             </Menu>
         </DockPanel>
 
