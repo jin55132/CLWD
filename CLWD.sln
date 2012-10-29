@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "The Google Words", "The Google Words.csproj", "{A9CEB94B-E945-4782-9165-E79842444EF1}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{7A9407FC-BA45-4EE0-8531-BAA4CE3EBDCD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +15,10 @@ Global
 		{A9CEB94B-E945-4782-9165-E79842444EF1}.Debug|x86.Build.0 = Debug|x86
 		{A9CEB94B-E945-4782-9165-E79842444EF1}.Release|x86.ActiveCfg = Release|x86
 		{A9CEB94B-E945-4782-9165-E79842444EF1}.Release|x86.Build.0 = Release|x86
+		{7A9407FC-BA45-4EE0-8531-BAA4CE3EBDCD}.Debug|x86.ActiveCfg = Debug
+		{7A9407FC-BA45-4EE0-8531-BAA4CE3EBDCD}.Debug|x86.Build.0 = Debug
+		{7A9407FC-BA45-4EE0-8531-BAA4CE3EBDCD}.Release|x86.ActiveCfg = Release
+		{7A9407FC-BA45-4EE0-8531-BAA4CE3EBDCD}.Release|x86.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -221,7 +221,6 @@ namespace CLWD.ViewModel
 
             Login();
 
-
         }
 
         bool CanSigninCommandExecute()
@@ -236,6 +235,8 @@ namespace CLWD.ViewModel
                 return new RelayCommand(SigninCommandExecute, CanSigninCommandExecute);
             }
         }
+
+
         #endregion
 
 

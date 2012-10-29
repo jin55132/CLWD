@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using CLWD.ViewModel;
+using System.Diagnostics;
 
 namespace CLWD.View
 {
@@ -25,8 +26,8 @@ namespace CLWD.View
             InitializeComponent();
             label1.Content =
                 "The Google Words requires access to spreadsheet of your Google Drive.\n" +
-                "The words you save will be seen as list in the spreadsheet titled \"Google Words Spreadsheet\"\n\n" +
-                "Modifying the first column of the spreadsheet might result in crash.\n\n";
+                "The words you save will be seen as list in the spreadsheet titled \"Google Words Spreadsheet\"\n" +
+                "Each sheet can be modified by hands, but keep in mind changing header will cause unexpected results.\n\n";
                
                
         }
@@ -57,6 +58,14 @@ namespace CLWD.View
         private void Window_Closed(object sender, EventArgs e)
         {
             ((GoogleOAuth2LoginViewModel)this.DataContext).WindowAlive = false ;
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Hyperlink thisLink = (Hyperlink)sender;
+            string navigateUri = thisLink.NavigateUri.ToString();
+            Process.Start(new ProcessStartInfo(navigateUri));
+            e.Handled = true;
         }
 
      

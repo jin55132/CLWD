@@ -42,6 +42,11 @@ namespace CLWD.ViewModel
             }
         }
 
+        //public bool InProgress
+        //{
+        //    get { return !Authorized; }
+        //}
+
         public GoogleOAuth2LoginViewModel GoogleOAuth2LoginViewModel
         {
             get
@@ -131,7 +136,7 @@ namespace CLWD.ViewModel
 
         bool CanLoginCommandExecute()
         {
-            return !Authorized && !GoogleOAuth2LoginViewModel.WindowAlive; ;
+            return !Authorized && !GoogleOAuth2LoginViewModel.WindowAlive;
         }
 
         bool CanLogoutCommandExecute()
@@ -153,7 +158,7 @@ namespace CLWD.ViewModel
 
         bool CanAddNewSheetExecute()
         {
-            return true;
+            return !Authorized && !GoogleOAuth2LoginViewModel.WindowAlive;
         }
         public ICommand AddNewSheetCommand { get { return new RelayCommand(AddNewSheetExecute, CanAddNewSheetExecute); } }
 
@@ -174,7 +179,7 @@ namespace CLWD.ViewModel
 
         bool CanDeleteCurrentSheetExecute()
         {
-            return true;
+            return !Authorized && !GoogleOAuth2LoginViewModel.WindowAlive;
         }
         public ICommand DeleteCurrentSheetCommand { get { return new RelayCommand(DeleteCurrentSheetExecute, CanDeleteCurrentSheetExecute); } }
 

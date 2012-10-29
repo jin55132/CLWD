@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using LoadingControl.Control;
 
 namespace CLWD.DP
 {
@@ -62,6 +63,20 @@ namespace CLWD.DP
                     obj.Visibility = Visibility.Visible;
                 }
 
+
+            }
+            else if (o is LoadingAnimation)
+            {
+                LoadingAnimation obj = o as LoadingAnimation;
+                bool isShowUI = (bool)e.NewValue;
+                if (isShowUI)
+                {
+                    obj.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    obj.Visibility = Visibility.Visible;
+                }
 
             }
             //else if (o is Button)

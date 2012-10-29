@@ -1,10 +1,13 @@
 ﻿<Window x:Class="CLWD.Sheet"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:u="clr-namespace:CLWD.DP"
         xmlns:local="clr-namespace:CLWD.ViewModel"
-        Title="The Google Words [Demo]" Height="450" Width="680" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
-
-
+        xmlns:ns="clr-namespace:CLWD.DP"
+        xmlns:control="clr-namespace:LoadingControl.Control"
+        Title="The Google Words [Demo]" Height="450" Width="680" WindowStartupLocation="CenterScreen" Closing="Window_Closing" StateChanged="Window_StateChanged" IsVisibleChanged="Window_IsVisibleChanged">
+ 
+    <Grid>
     <DockPanel>
         
         <DockPanel DockPanel.Dock="Top" KeyboardNavigation.TabNavigation="None">
@@ -40,5 +43,8 @@
                 
             </DataGrid.Columns>
         </DataGrid>
+        
     </DockPanel>
+        <control:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" ns:AttachedProperties.ShowInLogin="{Binding Authorized}" />
+    </Grid>
 </Window>
