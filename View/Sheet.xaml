@@ -5,7 +5,8 @@
         xmlns:local="clr-namespace:CLWD.ViewModel"
         xmlns:ns="clr-namespace:CLWD.DP"
         xmlns:control="clr-namespace:LoadingControl.Control"
-        Title="The Google Words [Demo]" Height="450" Width="680" WindowStartupLocation="CenterScreen" Closing="Window_Closing" StateChanged="Window_StateChanged" IsVisibleChanged="Window_IsVisibleChanged">
+        Icon="pack://application:,,,/Resources/Google.ico"
+        Title="The Google Words v0.1" Height="450" Width="680" WindowStartupLocation="CenterScreen" Closing="Window_Closing" StateChanged="Window_StateChanged" IsVisibleChanged="Window_IsVisibleChanged">
  
     <Grid>
     <DockPanel>
@@ -15,7 +16,8 @@
                 <MenuItem Header="_Account">
                     <MenuItem Header="Sign _in with Google" Command="{Binding Path=LoginCommand}" />
                     <MenuItem Header="Sign _out" Command="{Binding Path=LogoutCommand}" />
-                </MenuItem>
+                    
+                    </MenuItem>
             
 			 <MenuItem Header="_Sheet">
                     <MenuItem Header="Add _new sheet" Command="{Binding Path=AddNewSheetCommand}"/>
@@ -45,6 +47,6 @@
         </DataGrid>
         
     </DockPanel>
-        <control:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" ns:AttachedProperties.ShowInLogin="{Binding Authorized}" />
+        <control:LoadingAnimation HorizontalAlignment="Center" VerticalAlignment="Center" ns:AttachedProperties.ShowInLogin="{Binding Retrieving}" />
     </Grid>
 </Window>

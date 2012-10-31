@@ -73,8 +73,7 @@ namespace CLWD
 
             
 
-            //googleOAuth2LoginViewModel.Login();
-            
+             
         }
 
 

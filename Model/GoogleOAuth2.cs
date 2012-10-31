@@ -19,7 +19,8 @@ namespace CLWD.Model
             _oauth2Parameter.ClientSecret = "u6ET18iH007SJ_jo6WdcNlA3";
             _oauth2Parameter.RedirectUri = "urn:ietf:wg:oauth:2.0:oob";
             _oauth2Parameter.AccessToken = AccessToken;
-            _oauth2Parameter.Scope = "https://docs.google.com/feeds/ https://docs.googleusercontent.com/ https://spreadsheets.google.com/feeds/ https://www.googleapis.com/auth/userinfo.profile";
+            _oauth2Parameter.Scope = "https://docs.google.com/feeds/ https://spreadsheets.google.com/feeds/";
+            //_oauth2Parameter.Scope = "https://docs.google.com/feeds/ https://docs.googleusercontent.com/ https://spreadsheets.google.com/feeds/ https://www.googleapis.com/auth/userinfo.profile";
 
         }
 

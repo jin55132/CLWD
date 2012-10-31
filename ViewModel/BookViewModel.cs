@@ -24,9 +24,9 @@ namespace CLWD.ViewModel
     {
         #region Members
         private SpreadSheetDB _database;
-       // private GoogleOAuth2LoginViewModel _loginViewModel;
+        // private GoogleOAuth2LoginViewModel _loginViewModel;
         private ObservableCollection<VocaViewModel> _book = new ObservableCollection<VocaViewModel>();
-        
+
         #endregion
 
 
@@ -34,7 +34,7 @@ namespace CLWD.ViewModel
         #region Properties
 
         public WorksheetEntry Entry { get; set; }
-         
+
 
         public string BookTitle { get; set; }
 
@@ -62,16 +62,15 @@ namespace CLWD.ViewModel
             BookTitle = title;
             _database = db;
             Entry = entry;
-          
+
         }
 
         #endregion
 
 
 
-      
-        public void VocaViewModel_PropertyChanged(object sender, NotifyCollectionChangedEventArgs e)
 
+        public void VocaViewModel_PropertyChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Remove)
             {
@@ -93,6 +92,7 @@ namespace CLWD.ViewModel
                         {
 
                         }
+
 
                     };
 
@@ -150,7 +150,7 @@ namespace CLWD.ViewModel
                         {
                             var responseText = streamReader.ReadToEnd();
                             jstring = responseText;
-                            
+
                         }
 
                         vocaVM.Key = RandNumber(1, 10000);
@@ -166,9 +166,10 @@ namespace CLWD.ViewModel
                     try
                     {
 
-                        _database.UpdateVoca( this, vocaVM, oldDate, oldKey);
+                        _database.UpdateVoca(this, vocaVM, oldDate, oldKey);
 
                     }
+
                     catch
                     {
 
@@ -239,13 +240,13 @@ namespace CLWD.ViewModel
                 string voca;
                 if (term0.Count == count + 1)
                 {
-                     voca = string.Format("{0}:({1}) {2}", count++, strPos, strTerm);
+                    voca = string.Format("{0}:({1}) {2}", count++, strPos, strTerm);
                 }
                 else
                 {
-                     voca = string.Format("{0}:({1}) {2}\n", count++, strPos, strTerm);
+                    voca = string.Format("{0}:({1}) {2}\n", count++, strPos, strTerm);
                 }
-               
+
 
                 meaning += voca;
             }

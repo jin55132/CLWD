@@ -69,7 +69,7 @@ namespace CLWD.DP
             {
                 LoadingAnimation obj = o as LoadingAnimation;
                 bool isShowUI = (bool)e.NewValue;
-                if (isShowUI)
+                if (!isShowUI)
                 {
                     obj.Visibility = Visibility.Collapsed;
                 }

@@ -203,7 +203,6 @@ namespace CLWD
 
 
         public void RemoveVoca(BookViewModel bookVM, VocaViewModel vocaVM)
-
         {
 
 
@@ -237,30 +236,51 @@ namespace CLWD
             }
         }
 
-        public void RetrieveSpreadsheet(SpreadSheetViewModel spreadsheetVM)
+        //public void RetrieveSpreadsheet(SpreadSheetViewModel spreadsheetVM)
+        //{
+
+        //   WorksheetFeed wsFeed = spreadsheet.Worksheets;
+
+        //   AtomEntryCollection entries = wsFeed.Entries;
+
+        //   foreach (WorksheetEntry worksheet in entries)
+        //   {
+
+        //       BookViewModel bookVM = new BookViewModel(this, worksheet.Title.Text, worksheet);
+        //       bookVM.Book.CollectionChanged += bookVM.VocaViewModel_PropertyChanged;
+        //       RetrieveBook(bookVM);
+        //       spreadsheetVM.SpreadSheet.Add(bookVM);
+
+        //   }
+
+
+        //   ICollectionView vs = CollectionViewSource.GetDefaultView(spreadsheetVM.SpreadSheet);
+        //   vs.MoveCurrentToLast();
+
+
+        //}
+
+        public ObservableCollection<BookViewModel> RetrieveSpreadsheet()
         {
+            ObservableCollection<BookViewModel> _bookVM = new ObservableCollection<BookViewModel>();
 
-           WorksheetFeed wsFeed = spreadsheet.Worksheets;
+            WorksheetFeed wsFeed = spreadsheet.Worksheets;
 
-           AtomEntryCollection entries = wsFeed.Entries;
+            AtomEntryCollection entries = wsFeed.Entries;
 
-           foreach (WorksheetEntry worksheet in entries)
-           {
+            foreach (WorksheetEntry worksheet in entries)
+            {
 
-               BookViewModel bookVM = new BookViewModel(this, worksheet.Title.Text, worksheet);
-               bookVM.Book.CollectionChanged += bookVM.VocaViewModel_PropertyChanged;
-               RetrieveBook(bookVM);
-               spreadsheetVM.SpreadSheet.Add(bookVM);
+                BookViewModel bookVM = new BookViewModel(this, worksheet.Title.Text, worksheet);
+                bookVM.Book.CollectionChanged += bookVM.VocaViewModel_PropertyChanged;
+                RetrieveBook(bookVM);
+                _bookVM.Add(bookVM);
 
-           }
+            }
 
-
-           ICollectionView vs = CollectionViewSource.GetDefaultView(spreadsheetVM.SpreadSheet);
-           vs.MoveCurrentToLast();
-
+            return _bookVM;
 
         }
-
         public void AddBook(SpreadSheetViewModel spreadsheetVM)
         {
             WorksheetEntry worksheet = new WorksheetEntry();

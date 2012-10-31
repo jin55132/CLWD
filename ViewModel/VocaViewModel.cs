@@ -16,6 +16,7 @@ namespace CLWD.ViewModel
         public VocaViewModel()
         {
             _voca = new Voca { Word = "Insert a word", Definition = "" , Date = DateTime.Now};
+        
         }
         #endregion
 
@@ -131,20 +132,6 @@ namespace CLWD.ViewModel
             return Convert.ToInt64((date - epoch).TotalSeconds);
         }
 
-        #region Commands
-        void UpdateArtistNameExecute()
-        {
-          //  ++_count;
-           // ArtistName = string.Format("Elvis ({0})", _count);
-        }
-
-        bool CanUpdateArtistNameExecute()
-        {
-            return true;
-        }
-
-        public ICommand UpdateArtistName { get { return new RelayCommand(UpdateArtistNameExecute, CanUpdateArtistNameExecute); } }
-        #endregion
     
     }
 }

@@ -7,6 +7,9 @@ using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows.Data;
+using System.Threading;
+using System.Windows.Threading;
+using System.Windows;
 
 namespace CLWD.ViewModel
 {
@@ -14,7 +17,11 @@ namespace CLWD.ViewModel
     {
         private GoogleOAuth2LoginViewModel _loginViewModel;
         private SpreadSheetDB _database;
-        private ObservableCollection<BookViewModel> _spreadsheet = new ObservableCollection<BookViewModel>();
+        private ObservableCollection<BookViewModel> _spreadsheet = null;
+        private bool _retrieving;
+
+      
+
 
         #region properties
         public ObservableCollection<BookViewModel> SpreadSheet
@@ -26,6 +33,7 @@ namespace CLWD.ViewModel
             set
             {
                 _spreadsheet = value;
+                RaisePropertyChanged("SpreadSheet");
 
             }
         }
@@ -39,6 +47,16 @@ namespace CLWD.ViewModel
             {
                 _loginViewModel.Authorized = value;
 
+            }
+        }
+
+        public bool Retrieving
+        {
+            get { return _retrieving; }
+            set
+            {
+                _retrieving = value;
+                RaisePropertyChanged("Retrieving");
             }
         }
 
@@ -58,7 +76,6 @@ namespace CLWD.ViewModel
             {
                 if (_loginViewModel != value)
                     _loginViewModel = value;
-
 
             }
         }
@@ -110,12 +127,51 @@ namespace CLWD.ViewModel
             {
                 if (Authorized)
                 {
+
+                    
                     _database = new SpreadSheetDB(GoogleOAuth2LoginViewModel.OAuth2);
+
+                    Retrieving = true;
                     _database.Init();
+                    ObservableCollection<BookViewModel> bookVM = null;
+                    bookVM = _database.RetrieveSpreadsheet();
 
-                    _database.RetrieveSpreadsheet(this);
+                    this.SpreadSheet = bookVM;
+                    ICollectionView vs = CollectionViewSource.GetDefaultView(this.SpreadSheet);
+                    vs.MoveCurrentToLast();
+                    Retrieving = false;
+                    
+
+                    //ThreadStart start = delegate()
+                    //{
 
 
+                    //    
+                    //    try
+                    //    {
+
+
+
+                    //    }
+                    //    catch (System.Exception ex)
+                    //    {
+                    //        Console.WriteLine(ex.Message);
+                    //    }
+                        
+                    //  Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
+                    //                      new Action(() =>
+                    //                      {
+ 
+                    //                      }));
+
+          
+                    //};
+
+                    
+                    //new Thread(start).Start();
+
+             
+              
 
                 }
                 else
@@ -125,6 +181,7 @@ namespace CLWD.ViewModel
             }
 
         }
+
 
         void LoginExecute()
         {
@@ -136,12 +193,12 @@ namespace CLWD.ViewModel
 
         bool CanLoginCommandExecute()
         {
-            return !Authorized && !GoogleOAuth2LoginViewModel.WindowAlive;
+            return !Authorized && !GoogleOAuth2LoginViewModel.WindowAlive && !Retrieving;
         }
 
         bool CanLogoutCommandExecute()
         {
-            return Authorized && !GoogleOAuth2LoginViewModel.WindowAlive;
+            return Authorized && !GoogleOAuth2LoginViewModel.WindowAlive && !Retrieving;
         }
         public ICommand LoginCommand { get { return new RelayCommand(LoginExecute, CanLoginCommandExecute); } }
         public ICommand LogoutCommand { get { return new RelayCommand(LoginExecute, CanLogoutCommandExecute); } }
@@ -149,18 +206,12 @@ namespace CLWD.ViewModel
 
         void AddNewSheetExecute()
         {
-
             _database.AddBook(this);
 
-
-
         }
 
-        bool CanAddNewSheetExecute()
-        {
-            return !Authorized && !GoogleOAuth2LoginViewModel.WindowAlive;
-        }
-        public ICommand AddNewSheetCommand { get { return new RelayCommand(AddNewSheetExecute, CanAddNewSheetExecute); } }
+     
+        public ICommand AddNewSheetCommand { get { return new RelayCommand(AddNewSheetExecute, CanLogoutCommandExecute); } }
 
 
         void DeleteCurrentSheetExecute()
@@ -177,13 +228,7 @@ namespace CLWD.ViewModel
         }
 
 
-        bool CanDeleteCurrentSheetExecute()
-        {
-            return !Authorized && !GoogleOAuth2LoginViewModel.WindowAlive;
-        }
-        public ICommand DeleteCurrentSheetCommand { get { return new RelayCommand(DeleteCurrentSheetExecute, CanDeleteCurrentSheetExecute); } }
-
-
+        public ICommand DeleteCurrentSheetCommand { get { return new RelayCommand(DeleteCurrentSheetExecute, CanLogoutCommandExecute); } }
 
 
         public void Closing()

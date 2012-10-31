@@ -6,6 +6,7 @@ using System.Windows.Controls.Primitives;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
+using System.IO;
 
 namespace CLWD
 {
@@ -22,16 +23,13 @@ namespace CLWD
         {
             InitializeComponent();
 
-
-
-
             m_notifyIcon = new System.Windows.Forms.NotifyIcon();
             m_notifyIcon.BalloonTipText = "The Google Words stays in the tray bar. Click here either to open or close.";
             m_notifyIcon.BalloonTipTitle = "The Google Words";
             m_notifyIcon.Text = "The Google Words";
-            m_notifyIcon.Icon = new System.Drawing.Icon("Google.ico");
-            //m_notifyIcon.Icon = new Icon(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("CLWD.Google.ico"));
-
+            Stream iconStream = Application.GetResourceStream(new Uri("pack://application:,,,/Resources/Google.ico")).Stream;
+            m_notifyIcon.Icon = new System.Drawing.Icon(iconStream);
+          
 
             m_notifyIcon.Click += new EventHandler(m_notifyIcon_Click);
 
