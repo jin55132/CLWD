@@ -20,13 +20,14 @@ using Google.GData.Spreadsheets;
 
 namespace CLWD.ViewModel
 {
+    [Serializable]
     class BookViewModel : BaseViewModel
     {
         #region Members
         private SpreadSheetDB _database;
         // private GoogleOAuth2LoginViewModel _loginViewModel;
         private ObservableCollection<VocaViewModel> _book = new ObservableCollection<VocaViewModel>();
-
+       
         #endregion
 
 
@@ -50,6 +51,7 @@ namespace CLWD.ViewModel
 
             }
         }
+
 
         #endregion
 
@@ -167,7 +169,7 @@ namespace CLWD.ViewModel
                     {
 
                         _database.UpdateVoca(this, vocaVM, oldDate, oldKey);
-
+        
                     }
 
                     catch

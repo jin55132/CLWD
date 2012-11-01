@@ -25,8 +25,8 @@ namespace CLWD.View
         {
             InitializeComponent();
             label1.Content =
-                "The Google Words requires access to spreadsheet of your Google Drive.\n\n" +
-                "The words you save will be seen as list in the spreadsheet titled \"Google Words Spreadsheet\"\n\n" +
+                "The Google Words requires access to spreadsheet of your Google Drive.\n" +
+                "The words you save will be seen as list in the spreadsheet titled \"Google Words Spreadsheet\"\n" +
                 "Each sheet can be modified by hands, but keep in mind changing header will cause unexpected results.\n\n";
                
                

@@ -10,17 +10,19 @@ using System.Windows.Data;
 using System.Threading;
 using System.Windows.Threading;
 using System.Windows;
+using CLWD.Helpher;
 
 namespace CLWD.ViewModel
 {
+    [Serializable]
     class SpreadSheetViewModel : BaseViewModel
     {
         private GoogleOAuth2LoginViewModel _loginViewModel;
         private SpreadSheetDB _database;
-        private ObservableCollection<BookViewModel> _spreadsheet = null;
-        private bool _retrieving;
+        private ObservableCollection<BookViewModel> _spreadsheet = new ObservableCollection<BookViewModel>();
+        private bool _synchronizing;
 
-      
+
 
 
         #region properties
@@ -50,20 +52,17 @@ namespace CLWD.ViewModel
             }
         }
 
-        public bool Retrieving
+        public bool Synchronizing
         {
-            get { return _retrieving; }
+            get { return _synchronizing; }
             set
             {
-                _retrieving = value;
-                RaisePropertyChanged("Retrieving");
+                _synchronizing = value;
+                RaisePropertyChanged("Synchronizing");
             }
         }
 
-        //public bool InProgress
-        //{
-        //    get { return !Authorized; }
-        //}
+ 
 
         public GoogleOAuth2LoginViewModel GoogleOAuth2LoginViewModel
         {
@@ -83,8 +82,7 @@ namespace CLWD.ViewModel
 
         public SpreadSheetViewModel()
         {
-            //_database = new SpreadSheetDB(_loginViewModel.OAuth2);
-            _loginViewModel = new GoogleOAuth2LoginViewModel();
+             _loginViewModel = new GoogleOAuth2LoginViewModel();
 
             _loginViewModel.PropertyChanged += (obj, e) =>
             {
@@ -93,34 +91,9 @@ namespace CLWD.ViewModel
             };
 
             PropertyChanged += SpreadSheetViewModel_PropertyChanged;
-            //SpreadSheet.CollectionChanged += SpreadSheetCollectionChanged;
         }
 
-
-        //public void SpreadSheetCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        //{
-        //    if (e.Action == NotifyCollectionChangedAction.Add)
-        //    {
-
-
-        //        foreach (BookViewModel item in e.NewItems)
-        //        {
-
-
-
-        //        }
-        //    }
-        //    else if (e.Action == NotifyCollectionChangedAction.Remove)
-        //    {
-        //        foreach (BookViewModel item in e.OldItems)
-        //        {
-                   
-        //        }
-        //    }
-
-        //}
-
-         void SpreadSheetViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void SpreadSheetViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
 
             if (e.PropertyName == "Authorized")
@@ -128,50 +101,65 @@ namespace CLWD.ViewModel
                 if (Authorized)
                 {
 
-                    
+
                     _database = new SpreadSheetDB(GoogleOAuth2LoginViewModel.OAuth2);
 
-                    Retrieving = true;
-                    _database.Init();
-                    ObservableCollection<BookViewModel> bookVM = null;
-                    bookVM = _database.RetrieveSpreadsheet();
 
-                    this.SpreadSheet = bookVM;
-                    ICollectionView vs = CollectionViewSource.GetDefaultView(this.SpreadSheet);
-                    vs.MoveCurrentToLast();
-                    Retrieving = false;
-                    
-
-                    //ThreadStart start = delegate()
-                    //{
+                    ThreadStart start = delegate()
+                    {
 
 
-                    //    
-                    //    try
-                    //    {
+                        ObservableCollection<BookViewModel> sheets = null;
+                        try
+                        {
+
+                            Synchronizing = true;
+                            _database.Init();
+
+
+                            sheets = _database.RetrieveSpreadsheet();
+
+                        }
+                        catch (System.Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+
+                        Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
+                                            new Action(() =>
+                                            {
+                                                if (sheets != null)
+                                                {
+                                                    // deep copy of collection's items created from different thread 
+                                                    foreach (var bookitem in sheets)
+                                                    {
+                                                        BookViewModel book = new BookViewModel(_database, bookitem.BookTitle, bookitem.Entry);
+                                                        book.Book.CollectionChanged += book.VocaViewModel_PropertyChanged;
+
+                                                        foreach (var vocaitem in bookitem.Book)
+                                                        {
+                                                            book.Book.Add(vocaitem);
+                                                        }
+
+                                                        this.SpreadSheet.Add(book);
+                                                    }
+
+                                                    // move focus to the last
+                                                    ICollectionView vs = CollectionViewSource.GetDefaultView(this.SpreadSheet);
+                                                    vs.MoveCurrentToLast();
+                                                }
+
+                                                Synchronizing = false;
+                                            }));
+
+
+                    };
+
+
+                    new Thread(start).Start();
 
 
 
-                    //    }
-                    //    catch (System.Exception ex)
-                    //    {
-                    //        Console.WriteLine(ex.Message);
-                    //    }
-                        
-                    //  Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
-                    //                      new Action(() =>
-                    //                      {
- 
-                    //                      }));
-
-          
-                    //};
-
-                    
-                    //new Thread(start).Start();
-
-             
-              
 
                 }
                 else
@@ -193,12 +181,12 @@ namespace CLWD.ViewModel
 
         bool CanLoginCommandExecute()
         {
-            return !Authorized && !GoogleOAuth2LoginViewModel.WindowAlive && !Retrieving;
+            return !Authorized && !GoogleOAuth2LoginViewModel.WindowAlive && !Synchronizing;
         }
 
         bool CanLogoutCommandExecute()
         {
-            return Authorized && !GoogleOAuth2LoginViewModel.WindowAlive && !Retrieving;
+            return Authorized && !GoogleOAuth2LoginViewModel.WindowAlive && !Synchronizing;
         }
         public ICommand LoginCommand { get { return new RelayCommand(LoginExecute, CanLoginCommandExecute); } }
         public ICommand LogoutCommand { get { return new RelayCommand(LoginExecute, CanLogoutCommandExecute); } }
@@ -206,11 +194,33 @@ namespace CLWD.ViewModel
 
         void AddNewSheetExecute()
         {
-            _database.AddBook(this);
+           
+
+            ThreadStart start = delegate()
+            {
+                Synchronizing = true;
+
+                BookViewModel book = _database.AddBook(this);
+
+
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
+               new Action(() =>
+               {
+                   book.Book.CollectionChanged += book.VocaViewModel_PropertyChanged;
+                   this.SpreadSheet.Add(book);
+
+                   ICollectionView vs = CollectionViewSource.GetDefaultView(this.SpreadSheet);
+                   vs.MoveCurrentTo(book);
+               }));
+                Synchronizing = false;
+
+            };
+
+            new Thread(start).Start();
 
         }
 
-     
+
         public ICommand AddNewSheetCommand { get { return new RelayCommand(AddNewSheetExecute, CanLogoutCommandExecute); } }
 
 
@@ -218,12 +228,28 @@ namespace CLWD.ViewModel
         {
 
             ICollectionView vs = CollectionViewSource.GetDefaultView(SpreadSheet);
-            
+
 
             BookViewModel current = vs.CurrentItem as BookViewModel;
-            
-            if(current != null)
-                _database.DeleteBook(this, current);
+
+
+            ThreadStart start = delegate()
+            {
+                Synchronizing = true;
+                if (current != null)
+                    _database.DeleteBook(this, current);
+
+
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
+               new Action(() =>
+               {
+                   this.SpreadSheet.Remove(current);
+               }));
+                Synchronizing = false;
+
+            };
+
+            new Thread(start).Start();
 
         }
 

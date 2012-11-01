@@ -130,6 +130,7 @@ namespace CLWD.ViewModel
             
             query.Title = queryTitle;
 
+
             
             ThreadStart start = delegate()
             {

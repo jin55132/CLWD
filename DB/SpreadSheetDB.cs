@@ -182,7 +182,7 @@ namespace CLWD
                 }
                 catch (System.Exception ex)
                 {
-
+                    Console.WriteLine(ex.Message);
                 }
             }
 
@@ -231,7 +231,7 @@ namespace CLWD
                 }
                 catch (System.Exception ex)
                 {
-
+                    Console.WriteLine(ex.Message);
                 }
             }
         }
@@ -272,8 +272,67 @@ namespace CLWD
             {
 
                 BookViewModel bookVM = new BookViewModel(this, worksheet.Title.Text, worksheet);
-                bookVM.Book.CollectionChanged += bookVM.VocaViewModel_PropertyChanged;
-                RetrieveBook(bookVM);
+                //bookVM.Book.CollectionChanged += bookVM.VocaViewModel_PropertyChanged;
+
+                {
+
+
+                    AtomLink listFeedLink = bookVM.Entry.Links.FindService(GDataSpreadsheetsNameTable.ListRel, null);
+                    ListQuery listQuery = new ListQuery(listFeedLink.HRef.ToString());
+                    ListFeed listFeed = spreadsheetService.Query(listQuery);
+
+
+                    foreach (ListEntry row in listFeed.Entries)
+                    {
+
+                        VocaViewModel vocaVM = new VocaViewModel();
+
+                        try
+                        {
+                            foreach (ListEntry.Custom element in row.Elements)
+                            {
+
+                                switch (element.LocalName)
+                                {
+                                    case "word":
+                                        vocaVM.Word = element.Value;
+                                        break;
+
+                                    case "definition":
+                                        vocaVM.Definition = element.Value;
+                                        break;
+
+                                    case "date":
+                                        vocaVM.UnixTime = long.Parse(element.Value);
+                                        break;
+
+                                    case "key":
+                                        vocaVM.Key = int.Parse(element.Value);
+                                        break;
+
+                                    case "checked":
+                                        vocaVM.Checked = bool.Parse(element.Value);
+                                        break;
+
+                                }
+                            }
+                            bookVM.Book.Add(vocaVM);
+                        }
+                        catch (System.Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+
+                    }
+                    ICollectionView vs = CollectionViewSource.GetDefaultView(bookVM.Book);
+
+
+                    vs.SortDescriptions.Add(new SortDescription("Checked", ListSortDirection.Descending));
+                    vs.SortDescriptions.Add(new SortDescription("Date", ListSortDirection.Ascending));
+                    vs.MoveCurrentToLast();
+                }
+
+
                 _bookVM.Add(bookVM);
 
             }
@@ -281,7 +340,7 @@ namespace CLWD
             return _bookVM;
 
         }
-        public void AddBook(SpreadSheetViewModel spreadsheetVM)
+        public BookViewModel AddBook(SpreadSheetViewModel spreadsheetVM)
         {
             WorksheetEntry worksheet = new WorksheetEntry();
             WorksheetFeed wsFeed = spreadsheet.Worksheets;
@@ -299,12 +358,8 @@ namespace CLWD
 
 
             BookViewModel bookVM = new BookViewModel(this, title, worksheet);
-            bookVM.Book.CollectionChanged += bookVM.VocaViewModel_PropertyChanged;
-            spreadsheetVM.SpreadSheet.Add(bookVM);
+            return bookVM;
 
-
-            ICollectionView vs = CollectionViewSource.GetDefaultView(spreadsheetVM.SpreadSheet);
-            vs.MoveCurrentTo(bookVM);
 
         }
 
@@ -320,7 +375,6 @@ namespace CLWD
                 if (bookVM.BookTitle.Equals(worksheet.Title.Text))
                 {
                     worksheet.Delete();
-                    spreadsheetVM.SpreadSheet.Remove(bookVM);
                     
                 }
 
@@ -329,65 +383,13 @@ namespace CLWD
         }
 
 
-        public void RetrieveBook(BookViewModel bookVM)
-        {
+        //public void RetrieveBook(BookViewModel bookVM)
+        //{
 
 
-            AtomLink listFeedLink = bookVM.Entry.Links.FindService(GDataSpreadsheetsNameTable.ListRel, null);
-            ListQuery listQuery = new ListQuery(listFeedLink.HRef.ToString());
-            ListFeed listFeed = spreadsheetService.Query(listQuery);
 
 
-            foreach (ListEntry row in listFeed.Entries)
-            {
 
-                VocaViewModel vocaVM = new VocaViewModel();
-
-                try
-                {
-                    foreach (ListEntry.Custom element in row.Elements)
-                    {
-
-                        switch (element.LocalName)
-                        {
-                            case "word":
-                                vocaVM.Word = element.Value;
-                                break;
-
-                            case "definition":
-                                vocaVM.Definition = element.Value;
-                                break;
-
-                            case "date":
-                                vocaVM.UnixTime = long.Parse(element.Value);
-                                break;
-
-                            case "key":
-                                vocaVM.Key = int.Parse(element.Value);
-                                break;
-
-                            case "checked":
-                                vocaVM.Checked = bool.Parse(element.Value);
-                                break;
-
-                        }
-                    }
-                    bookVM.Book.Add(vocaVM);
-                }
-                catch (System.Exception ex)
-                {
-
-                }
-
-            }
-            ICollectionView vs = CollectionViewSource.GetDefaultView(bookVM.Book);
-            
-
-            vs.SortDescriptions.Add(new SortDescription("Checked", ListSortDirection.Descending));
-            vs.SortDescriptions.Add(new SortDescription("Date", ListSortDirection.Ascending));
-            vs.MoveCurrentToLast();
-
-
-        }
+        //}
     }
 }

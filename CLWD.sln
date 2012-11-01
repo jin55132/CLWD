@@ -3,16 +3,28 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "The Google Words", "The Google Words.csproj", "{A9CEB94B-E945-4782-9165-E79842444EF1}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup\Setup.vdproj", "{CD0F0DB9-F043-4B1E-AE9D-519350A06405}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A9CEB94B-E945-4782-9165-E79842444EF1}.Debug|x64.ActiveCfg = Debug|x64
+		{A9CEB94B-E945-4782-9165-E79842444EF1}.Debug|x64.Build.0 = Debug|x64
 		{A9CEB94B-E945-4782-9165-E79842444EF1}.Debug|x86.ActiveCfg = Debug|x86
 		{A9CEB94B-E945-4782-9165-E79842444EF1}.Debug|x86.Build.0 = Debug|x86
+		{A9CEB94B-E945-4782-9165-E79842444EF1}.Release|x64.ActiveCfg = Release|x64
+		{A9CEB94B-E945-4782-9165-E79842444EF1}.Release|x64.Build.0 = Release|x64
 		{A9CEB94B-E945-4782-9165-E79842444EF1}.Release|x86.ActiveCfg = Release|x86
 		{A9CEB94B-E945-4782-9165-E79842444EF1}.Release|x86.Build.0 = Release|x86
+		{CD0F0DB9-F043-4B1E-AE9D-519350A06405}.Debug|x64.ActiveCfg = Debug
+		{CD0F0DB9-F043-4B1E-AE9D-519350A06405}.Debug|x86.ActiveCfg = Debug
+		{CD0F0DB9-F043-4B1E-AE9D-519350A06405}.Release|x64.ActiveCfg = Release
+		{CD0F0DB9-F043-4B1E-AE9D-519350A06405}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
