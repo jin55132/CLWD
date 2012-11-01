@@ -124,34 +124,39 @@ namespace CLWD.ViewModel
                         {
                             Console.WriteLine(ex.Message);
                         }
+                        
 
-                        Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
-                                            new Action(() =>
-                                            {
-                                                if (sheets != null)
-                                                {
-                                                    // deep copy of collection's items created from different thread 
-                                                    foreach (var bookitem in sheets)
-                                                    {
-                                                        BookViewModel book = new BookViewModel(_database, bookitem.BookTitle, bookitem.Entry);
-                                                        book.Book.CollectionChanged += book.VocaViewModel_PropertyChanged;
+                        if (Application.Current != null)
+                        {
+                            Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
+                                                       new Action(() =>
+                                                       {
+                                                           if (sheets != null)
+                                                           {
+                                                               // deep copy of collection's items created from different thread 
+                                                               foreach (var bookitem in sheets)
+                                                               {
+                                                                   BookViewModel book = new BookViewModel(_database, bookitem.BookTitle, bookitem.Entry);
+                                                                   book.Book.CollectionChanged += book.VocaViewModel_PropertyChanged;
 
-                                                        foreach (var vocaitem in bookitem.Book)
-                                                        {
-                                                            book.Book.Add(vocaitem);
-                                                        }
+                                                                   foreach (var vocaitem in bookitem.Book)
+                                                                   {
+                                                                       book.Book.Add(vocaitem);
+                                                                   }
 
-                                                        this.SpreadSheet.Add(book);
-                                                    }
+                                                                   this.SpreadSheet.Add(book);
+                                                               }
 
-                                                    // move focus to the last
-                                                    ICollectionView vs = CollectionViewSource.GetDefaultView(this.SpreadSheet);
-                                                    vs.MoveCurrentToLast();
-                                                }
+                                                               // move focus to the last
+                                                               ICollectionView vs = CollectionViewSource.GetDefaultView(this.SpreadSheet);
+                                                               vs.MoveCurrentToLast();
+                                                           }
 
-                                                Synchronizing = false;
-                                            }));
+                                                           Synchronizing = false;
+                                                       }));
 
+                        }
+       
 
                     };
 
