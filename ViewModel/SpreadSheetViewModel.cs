@@ -207,7 +207,6 @@ namespace CLWD.ViewModel
 
                 BookViewModel book = _database.AddBook(this);
 
-
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
                new Action(() =>
                {
