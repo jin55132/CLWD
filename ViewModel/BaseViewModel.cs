@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace CLWD.ViewModel
 {
-    [Serializable]
+ 
     public abstract class BaseViewModel : ObservableObject, IDisposable
     {
         #region Fields

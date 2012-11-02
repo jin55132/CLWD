@@ -14,7 +14,7 @@ using CLWD.Helpher;
 
 namespace CLWD.ViewModel
 {
-    [Serializable]
+    
     class SpreadSheetViewModel : BaseViewModel
     {
         private GoogleOAuth2LoginViewModel _loginViewModel;
