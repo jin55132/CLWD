@@ -14,7 +14,7 @@ using CLWD.Helpher;
 
 namespace CLWD.ViewModel
 {
-    [Serializable]
+    
     class SpreadSheetViewModel : BaseViewModel
     {
         private GoogleOAuth2LoginViewModel _loginViewModel;
@@ -206,7 +206,6 @@ namespace CLWD.ViewModel
                 Synchronizing = true;
 
                 BookViewModel book = _database.AddBook(this);
-
 
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal,
                new Action(() =>

@@ -65,9 +65,9 @@ namespace CLWD
         #endregion
 
 
-        private string genTitle(int index)
+        private string genTitle()
         {
-            return string.Format("Book {0}", index);
+            return string.Format("({0})", DateTime.Now);
         }
 
         public void Init()
@@ -94,7 +94,7 @@ namespace CLWD
             WorksheetEntry worksheet = (WorksheetEntry)wsFeed.Entries[0];
                         
             
-            InitWorksheet(worksheet, genTitle(1));
+            InitWorksheet(worksheet, genTitle());
 
 
         }
@@ -344,7 +344,7 @@ namespace CLWD
         {
             WorksheetEntry worksheet = new WorksheetEntry();
             WorksheetFeed wsFeed = spreadsheet.Worksheets;
-            string title = genTitle(wsFeed.Entries.Count + 1);
+            string title = genTitle();
             worksheet.Cols = 5;
             worksheet.Rows = 500;
             worksheet.Title.Text = title;

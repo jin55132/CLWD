@@ -20,7 +20,7 @@ using Google.GData.Spreadsheets;
 
 namespace CLWD.ViewModel
 {
-    [Serializable]
+    
     class BookViewModel : BaseViewModel
     {
         #region Members
