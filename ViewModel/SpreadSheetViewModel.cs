@@ -62,7 +62,7 @@ namespace CLWD.ViewModel
             }
         }
 
- 
+
 
         public GoogleOAuth2LoginViewModel GoogleOAuth2LoginViewModel
         {
@@ -82,7 +82,7 @@ namespace CLWD.ViewModel
 
         public SpreadSheetViewModel()
         {
-             _loginViewModel = new GoogleOAuth2LoginViewModel();
+            _loginViewModel = new GoogleOAuth2LoginViewModel();
 
             _loginViewModel.PropertyChanged += (obj, e) =>
             {
@@ -124,7 +124,7 @@ namespace CLWD.ViewModel
                         {
                             Console.WriteLine(ex.Message);
                         }
-                        
+
 
                         if (Application.Current != null)
                         {
@@ -156,7 +156,7 @@ namespace CLWD.ViewModel
                                                        }));
 
                         }
-       
+
 
                     };
 
@@ -199,7 +199,7 @@ namespace CLWD.ViewModel
 
         void AddNewSheetExecute()
         {
-           
+
 
             ThreadStart start = delegate()
             {

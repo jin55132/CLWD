@@ -214,7 +214,42 @@ namespace CLWD.ViewModel
 
         }
 
+        public string extractDefinition(JsonObjectCollection collection)
+        {
 
+
+
+            int count = 0;
+            string def = "";
+
+            if (collection == null)
+                return def;
+
+            foreach (JsonObjectCollection cols in collection as JsonObjectCollection)
+            {
+                JsonObjectCollection OriginalTerm = (JsonObjectCollection)cols["OriginalTerm"];
+                JsonObjectCollection FirstTranslation = (JsonObjectCollection)cols["FirstTranslation"];
+                JsonObject term = FirstTranslation["term"];
+                JsonObject pos = OriginalTerm["POS"];
+
+                string strTerm = (string)term.GetValue();
+                string strPos = (string)pos.GetValue();
+
+                string voca;
+                //if (collection.Count == count + 1)
+                //{
+                //    voca = string.Format("({1}) {2}", strPos, strTerm);
+                //}
+                //else
+                {
+                    voca = string.Format("({0}) {1}\n", strPos, strTerm);
+                }
+
+                def += voca;
+            }
+
+            return def;
+        }
 
         public string jsonProcessor(string jsoninput)
         {
@@ -225,34 +260,21 @@ namespace CLWD.ViewModel
             JsonObject obj = parser.Parse(jsoninput);
 
             JsonObjectCollection rootCol = obj as JsonObjectCollection;
-            JsonObjectCollection term0 = (JsonObjectCollection)((JsonObjectCollection)rootCol["term0"])["PrincipalTranslations"];
+
+            JsonObjectCollection principle = (JsonObjectCollection)((JsonObjectCollection)rootCol["term0"])["PrincipalTranslations"];
+            JsonObjectCollection entries = (JsonObjectCollection)((JsonObjectCollection)rootCol["term0"])["Entries"];
+            JsonObjectCollection additional = (JsonObjectCollection)((JsonObjectCollection)rootCol["term0"])["AdditionalTranslations"];
 
 
-            int count = 0;
-            foreach (JsonObjectCollection principalCol in term0 as JsonObjectCollection)
+
+            meaning += extractDefinition(principle); ;
+            meaning += extractDefinition(entries);
+            meaning += extractDefinition(additional); ;
+
+            if (meaning.Length > 0)
             {
-                JsonObjectCollection OriginalTerm = (JsonObjectCollection)principalCol["OriginalTerm"];
-                JsonObjectCollection FirstTranslation = (JsonObjectCollection)principalCol["FirstTranslation"];
-                JsonObject term = FirstTranslation["term"];
-                JsonObject pos = OriginalTerm["POS"];
-
-                string strTerm = (string)term.GetValue();
-                string strPos = (string)pos.GetValue();
-
-                string voca;
-                if (term0.Count == count + 1)
-                {
-                    voca = string.Format("{0}:({1}) {2}", count++, strPos, strTerm);
-                }
-                else
-                {
-                    voca = string.Format("{0}:({1}) {2}\n", count++, strPos, strTerm);
-                }
-
-
-                meaning += voca;
+                meaning = meaning.Remove(meaning.Length - 1);
             }
-
 
             return meaning;
         }
